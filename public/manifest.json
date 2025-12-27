@@ -1,0 +1,33 @@
+{
+  "name": "Call Me - Secure Line",
+  "short_name": "Call Me",
+  "description": "Make encrypted calls directly from your browser",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a1a",
+  "theme_color": "#0a0a1a",
+  "orientation": "portrait",
+  "categories": ["communication", "utilities"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Start Call",
+      "url": "/",
+      "description": "Start a new call"
+    }
+  ]
+}

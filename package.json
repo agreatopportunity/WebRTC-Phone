@@ -1,0 +1,33 @@
+{
+  "name": "webrtc-phone",
+  "version": "1.0.0",
+  "description": "Self-hosted encrypted WebRTC calling system with PWA support",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "generate-vapid": "npx web-push generate-vapid-keys",
+    "setup": "node scripts/setup.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2",
+    "web-push": "^3.6.6",
+    "nodemailer": "^6.9.7"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "webrtc",
+    "voip",
+    "phone",
+    "pwa",
+    "encrypted",
+    "self-hosted"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
