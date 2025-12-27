@@ -1112,6 +1112,24 @@
         }
       };
       
+      // Monitor ICE connection state
+      peerConnection.oniceconnectionstatechange = () => {
+        console.log('ICE connection state:', peerConnection.iceConnectionState);
+        if (peerConnection.iceConnectionState === 'failed') {
+          console.error('ICE connection failed - may need TURN server');
+          callStatus.textContent = 'Connection failed';
+        } else if (peerConnection.iceConnectionState === 'checking') {
+          callStatus.textContent = 'Connecting...';
+        } else if (peerConnection.iceConnectionState === 'connected') {
+          callStatus.textContent = 'Connected';
+        }
+      };
+      
+      // Monitor ICE gathering state
+      peerConnection.onicegatheringstatechange = () => {
+        console.log('ICE gathering state:', peerConnection.iceGatheringState);
+      };
+      
       // Handle remote stream
       peerConnection.ontrack = (event) => {
         console.log('Received remote track');
