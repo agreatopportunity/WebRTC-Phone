@@ -7,6 +7,7 @@
  * - Email notifications for incoming calls
  * - Room management for call routing
  */
+
 import 'dotenv/config';
 import express from 'express';
 import { createServer } from 'http';
@@ -64,10 +65,22 @@ const CONFIG = {
     { urls: 'stun:stun.l.google.com:19302' },
     { urls: 'stun:stun1.l.google.com:19302' },
     { urls: 'stun:stun2.l.google.com:19302' },
-    { urls: 'stun:stun3.l.google.com:19302' },
-    { urls: 'stun:stun4.l.google.com:19302' },
-    // Add your own TURN server here for better connectivity:
-    // { urls: 'turn:your-turn-server.com:3478', username: 'user', credential: 'pass' }
+    // Free TURN servers from Open Relay Project
+    {
+      urls: 'turn:openrelay.metered.ca:80',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:443',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    }
   ]
 };
 
@@ -362,6 +375,7 @@ io.on('connection', (socket) => {
   
   socket.on('ice-candidate', (data) => {
     const { roomId, candidate, targetId } = data;
+    console.log(`ICE candidate from ${socket.id} to ${targetId}`);
     io.to(targetId).emit('ice-candidate', { candidate, roomId, senderId: socket.id });
   });
   
