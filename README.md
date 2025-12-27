@@ -48,6 +48,7 @@ A completely free, self-hosted WebRTC calling system with PWA support. Anyone ca
 ```bash
 git clone https://github.com/agreatopportunity/WebRTC-Phone.git
 cd webrtc-phone
+npm install dotenv
 npm install
 ```
 
