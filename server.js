@@ -199,6 +199,15 @@ async function sendEmailNotification(callerName) {
 app.use(express.json());
 app.use(express.static(join(__dirname, 'public')));
 
+// Serve HTML pages
+app.get('/', (req, res) => {
+  res.sendFile(join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/owner', (req, res) => {
+  res.sendFile(join(__dirname, 'public', 'owner.html'));
+});
+
 // API Routes
 app.get('/api/config', (req, res) => {
   res.json({
