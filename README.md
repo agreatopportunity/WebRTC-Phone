@@ -46,7 +46,7 @@ A completely free, self-hosted WebRTC calling system with PWA support. Anyone ca
 ### 1. Clone and Install
 
 ```bash
-git clone https://github.com/yourusername/webrtc-phone.git
+git clone https://github.com/agreatopportunity/WebRTC-Phone.git
 cd webrtc-phone
 npm install
 ```
