@@ -652,6 +652,7 @@
     let iceServers = [];
     let audioContext = null;
     let analyser = null;
+    let pendingIceCandidates = []; // Queue for ICE candidates that arrive early
     
     // ==========================================================================
     // DOM ELEMENTS
@@ -805,14 +806,26 @@
     }
     
     async function handleOffer(data) {
-      const { offer, senderId } = data;
+      const { offer, senderId, roomId: offerRoomId } = data;
+      
+      // Use roomId from offer if our local one isn't set
+      if (offerRoomId && !roomId) {
+        roomId = offerRoomId;
+      }
+      
+      console.log('Received offer from:', senderId, 'roomId:', roomId);
       
       try {
         await createPeerConnection(senderId);
         await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
         
+        // Process any ICE candidates that arrived before we were ready
+        await processPendingIceCandidates();
+        
         const answer = await peerConnection.createAnswer();
         await peerConnection.setLocalDescription(answer);
+        
+        console.log('Sending answer to:', senderId);
         
         socket.emit('answer', {
           roomId,
@@ -838,12 +851,30 @@
     async function handleIceCandidate(data) {
       const { candidate } = data;
       
+      if (!candidate) return;
+      
       try {
-        if (peerConnection && candidate) {
+        if (peerConnection && peerConnection.remoteDescription) {
+          console.log('Adding ICE candidate');
           await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+        } else {
+          console.log('Queuing ICE candidate (peer connection not ready)');
+          pendingIceCandidates.push(candidate);
         }
       } catch (err) {
         console.error('Error adding ICE candidate:', err);
+      }
+    }
+    
+    async function processPendingIceCandidates() {
+      console.log('Processing', pendingIceCandidates.length, 'pending ICE candidates');
+      while (pendingIceCandidates.length > 0) {
+        const candidate = pendingIceCandidates.shift();
+        try {
+          await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+        } catch (err) {
+          console.error('Error adding queued ICE candidate:', err);
+        }
       }
     }
     
@@ -854,21 +885,32 @@
         ]
       };
       
+      console.log('Creating peer connection with config:', config);
+      console.log('Target ID:', targetId, 'Room ID:', roomId);
+      
       peerConnection = new RTCPeerConnection(config);
       
       // Add local tracks
-      localStream.getTracks().forEach(track => {
-        peerConnection.addTrack(track, localStream);
-      });
+      if (localStream) {
+        localStream.getTracks().forEach(track => {
+          console.log('Adding local track:', track.kind);
+          peerConnection.addTrack(track, localStream);
+        });
+      } else {
+        console.error('No local stream available!');
+      }
       
-      // Handle ICE candidates
+      // Handle ICE candidates - CRITICAL for connection
       peerConnection.onicecandidate = (event) => {
         if (event.candidate) {
+          console.log('Sending ICE candidate to:', targetId);
           socket.emit('ice-candidate', {
             roomId,
             candidate: event.candidate,
             targetId
           });
+        } else {
+          console.log('ICE gathering complete');
         }
       };
       
