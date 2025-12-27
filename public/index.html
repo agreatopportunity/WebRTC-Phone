@@ -886,6 +886,19 @@
         }
       };
       
+      // Monitor ICE connection state
+      peerConnection.oniceconnectionstatechange = () => {
+        console.log('ICE connection state:', peerConnection.iceConnectionState);
+        if (peerConnection.iceConnectionState === 'failed') {
+          console.error('ICE connection failed - may need TURN server');
+        }
+      };
+      
+      // Monitor ICE gathering state
+      peerConnection.onicegatheringstatechange = () => {
+        console.log('ICE gathering state:', peerConnection.iceGatheringState);
+      };
+      
       // Handle remote stream
       peerConnection.ontrack = (event) => {
         console.log('Received remote track');
