@@ -1,5 +1,5 @@
 /**
- * WebRTC Phone + Messaging Server v2
+ * WebRTC Phone + Messaging Server
  * 
  * Features:
  * - WebRTC calling with signaling
@@ -1020,13 +1020,27 @@ io.on('connection', (socket) => {
   
   // =========== MESSAGING ===========
   
-  socket.on('typing', (data) => {
+  socket.on('typing', async (data) => {
     const { conversationId, visitorId, isTyping } = data;
     
-    if (socket.isOwner) {
+    if (socket.isOwner && visitorId) {
+      // Owner typing to visitor
       io.to(`visitor-${visitorId}`).emit('owner-typing', { isTyping });
-    } else {
-      io.to('owner-room').emit('visitor-typing', { conversationId, visitorId, isTyping });
+    } else if (visitorId) {
+      // Visitor typing to owner - look up conversation ID if not provided
+      let convId = conversationId;
+      if (!convId && db) {
+        try {
+          const [rows] = await db.query(
+            'SELECT c.id FROM conversations c JOIN visitors v ON v.id = c.visitor_id WHERE v.visitor_id = ?',
+            [visitorId]
+          );
+          if (rows.length > 0) convId = rows[0].id;
+        } catch (e) {
+          console.error('Typing lookup error:', e);
+        }
+      }
+      io.to('owner-room').emit('visitor-typing', { conversationId: convId, visitorId, isTyping });
     }
   });
   
