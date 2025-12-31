@@ -2,7 +2,7 @@
 
 A self-hosted, encrypted calling **AND** messaging system with authentication, MySQL persistence, and PWA support.
 
-## ✨ What's New in v2
+## ✨ What's New in the Updates 
 
 - **💬 Messaging** - Real-time chat alongside voice calls
 - **🔐 Authentication** - Password-protected owner dashboard  
