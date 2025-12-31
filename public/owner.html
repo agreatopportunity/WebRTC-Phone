@@ -1078,6 +1078,25 @@
         }
       });
       
+      // Owner typing indicator
+      let ownerTypingTimeout = null;
+      chatInput.addEventListener('input', () => {
+        if (!currentConversation) return;
+        
+        socket.emit('typing', { 
+          visitorId: currentConversation.visitorId, 
+          isTyping: true 
+        });
+        
+        clearTimeout(ownerTypingTimeout);
+        ownerTypingTimeout = setTimeout(() => {
+          socket.emit('typing', { 
+            visitorId: currentConversation.visitorId, 
+            isTyping: false 
+          });
+        }, 1000);
+      });
+      
       // File upload
       fileInput.addEventListener('change', handleFileUpload);
       
