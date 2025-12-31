@@ -63,8 +63,8 @@ A self-hosted, encrypted calling **AND** messaging system with authentication, M
 ### 2. Clone & Install
 
 ```bash
-git clone <repo>
-cd webrtc-phone-v2
+git clone https://github.com/agreatopportunity/WebRTC-Phone.git
+cd WebRTC-Phone
 npm install
 ```
 
@@ -116,6 +116,18 @@ npm start
 - Login: `https://your-domain.com/login`
 - Owner dashboard: `https://your-domain.com/owner`
 
+
+### Generate PWA Icons
+
+Convert the SVG icon to PNG (or use your own icons):
+
+```bash
+# Using ImageMagick
+convert -background none public/icon.svg -resize 192x192 public/icon-192.png
+convert -background none public/icon.svg -resize 512x512 public/icon-512.png
+
+# Or use an online tool like https://svgtopng.com/
+```
 ## 📱 Features
 
 ### For Visitors
