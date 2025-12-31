@@ -1,4 +1,4 @@
-# 📞💬 WebRTC Phone + Messaging v2
+# 📞💬 WebRTC Phone + Messaging
 
 A self-hosted, encrypted calling **AND** messaging system with authentication, MySQL persistence, and PWA support.
 
