@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0a1a">
+  <meta name="description" content="Contact me - Call or message directly from your browser">
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Contact">
+  
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  
+  <title>Contact Me - Call or Message</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-primary: #0a0a1a;
+      --bg-secondary: #12122a;
+      --bg-tertiary: #1a1a3a;
+      --accent-primary: #00ffcc;
+      --accent-secondary: #00ccff;
+      --accent-call: #00ff88;
+      --accent-video: #ff6b6b;
+      --accent-message: #7c3aed;
+      --accent-danger: #ff4466;
+      --accent-warning: #ffaa00;
+      --text-primary: #ffffff;
+      --text-secondary: #8888aa;
+      --text-muted: #555577;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(0, 255, 204, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 204, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: gridMove 20s linear infinite;
+      pointer-events: none;
+    }
+    
+    @keyframes gridMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, 50px); }
+    }
+    
+    .container {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    /* Header */
+    .header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--text-muted);
+    }
+    
+    .status-indicator.online {
+      background: var(--accent-primary);
+      box-shadow: 0 0 10px var(--accent-primary);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .status-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .encrypt-badge {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(0, 255, 204, 0.1);
+      border: 1px solid rgba(0, 255, 204, 0.2);
+      border-radius: 20px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent-primary);
+    }
+    
+    /* Cards */
+    .card {
+      background: var(--bg-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 450px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+      opacity: 0.5;
+    }
+    
+    .hidden { display: none !important; }
+    
+    /* Welcome Card */
+    .avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+    }
+    
+    .title {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+    
+    .input-group {
+      margin-bottom: 24px;
+    }
+    
+    .input-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .input {
+      width: 100%;
+      padding: 14px 18px;
+      background: var(--bg-tertiary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 16px;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+    
+    .input:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(0, 255, 204, 0.2);
+    }
+    
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .action-btn {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+    }
+    
+    .action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .action-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+    
+    .call-btn {
+      background: linear-gradient(135deg, var(--accent-call), #00cc6a);
+      color: var(--bg-primary);
+    }
+    
+    .call-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+    }
+    
+    .video-btn {
+      background: linear-gradient(135deg, var(--accent-video), #cc5555);
+      color: white;
+    }
+    
+    .video-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+    }
+    
+    .message-btn {
+      background: linear-gradient(135deg, var(--accent-message), #5b21b6);
+      color: white;
+    }
+    
+    .message-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+    }
+    
+    /* Message Chat */
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 500px;
+      max-height: 70vh;
+    }
+    
+    .chat-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      margin-bottom: 16px;
+    }
+    
+    .chat-header-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--accent-message), #5b21b6);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+    
+    .chat-header-text h2 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .chat-header-text p {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .back-btn {
+      margin-left: auto;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--bg-tertiary);
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .back-btn:hover {
+      background: var(--bg-primary);
+      color: var(--accent-primary);
+    }
+    
+    .messages-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .message {
+      max-width: 85%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    
+    .message.visitor {
+      background: var(--accent-message);
+      color: white;
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+    }
+    
+    .message.owner {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border-bottom-left-radius: 4px;
+    }
+    
+    .message-time {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 4px;
+    }
+    
+    .message-image {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 4px;
+      cursor: pointer;
+    }
+    
+    .message-file {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      text-decoration: none;
+      color: inherit;
+      margin-bottom: 4px;
+    }
+    
+    .message-file:hover {
+      background: rgba(0, 0, 0, 0.3);
+    }
+    
+    .file-icon {
+      font-size: 24px;
+    }
+    
+    .file-info {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .file-name {
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .file-size {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+    
+    /* Image preview modal */
+    .image-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .image-modal.active {
+      display: flex;
+    }
+    
+    .image-modal img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 8px;
+    }
+    
+    .image-modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    
+    .typing-indicator {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 8px 0;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .typing-indicator.visible {
+      display: flex;
+    }
+    
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+    }
+    
+    .typing-dots span {
+      width: 6px;
+      height: 6px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      animation: typingBounce 1.4s infinite ease-in-out;
+    }
+    
+    .typing-dots span:nth-child(1) { animation-delay: 0s; }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    
+    @keyframes typingBounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+      40% { transform: translateY(-6px); opacity: 1; }
+    }
+    
+    .chat-input-container {
+      display: flex;
+      gap: 10px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      align-items: center;
+    }
+    
+    .attach-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+    
+    .attach-btn:hover {
+      background: var(--accent-message);
+      color: white;
+    }
+    
+    .attach-btn input {
+      display: none;
+    }
+    
+    /* Voice message button */
+    .voice-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+    
+    .voice-btn:hover {
+      background: var(--accent-danger);
+      color: white;
+    }
+    
+    .voice-btn.recording {
+      background: var(--accent-danger);
+      color: white;
+      animation: recordPulse 1s ease-in-out infinite;
+    }
+    
+    @keyframes recordPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    
+    /* Voice message in chat */
+    .voice-message {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 20px;
+      margin-bottom: 4px;
+    }
+    
+    .voice-message audio {
+      height: 32px;
+      max-width: 200px;
+    }
+    
+    .voice-duration {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.6);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    /* Read receipts */
+    .message-status {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 2px;
+    }
+    
+    .message-status .check {
+      font-size: 12px;
+    }
+    
+    .message-status .check.read {
+      color: var(--accent-primary);
+    }
+    
+    /* Recording overlay */
+    .recording-overlay {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent-danger);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 30px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(255, 68, 102, 0.4);
+    }
+    
+    .recording-overlay.active {
+      display: flex;
+    }
+    
+    .recording-dot {
+      width: 10px;
+      height: 10px;
+      background: white;
+      border-radius: 50%;
+      animation: blink 1s ease-in-out infinite;
+    }
+    
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    
+    .chat-input {
+      flex: 1;
+      padding: 14px 18px;
+      background: var(--bg-tertiary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+    }
+    
+    .chat-input:focus {
+      outline: none;
+      border-color: var(--accent-message);
+    }
+    
+    .send-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--accent-message);
+      border: none;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .send-btn:hover:not(:disabled) {
+      transform: scale(1.1);
+    }
+    
+    .send-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    /* Calling UI */
+    .call-status-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .call-timer {
+      font-size: 48px;
+      font-weight: 300;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
+      margin: 20px 0;
+    }
+    
+    .visualizer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 60px;
+      margin: 20px 0;
+    }
+    
+    .visualizer-bar {
+      width: 4px;
+      background: var(--accent-call);
+      border-radius: 2px;
+    }
+    
+    .call-controls {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    
+    .control-btn {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .control-btn svg { width: 24px; height: 24px; }
+    
+    .control-btn.mute {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+    
+    .control-btn.mute.active {
+      background: var(--accent-warning);
+      color: var(--bg-primary);
+    }
+    
+    .control-btn.end {
+      background: var(--accent-danger);
+      color: white;
+      width: 72px;
+      height: 72px;
+    }
+    
+    .control-btn:hover { transform: scale(1.1); }
+    
+    .ringing .avatar { animation: ring 0.5s ease-in-out infinite; }
+    
+    @keyframes ring {
+      0%, 100% { transform: rotate(-5deg); }
+      50% { transform: rotate(5deg); }
+    }
+    
+    @keyframes barPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    
+    .footer {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  
+  <div class="container">
+    <header class="header">
+      <div class="status-indicator" id="statusIndicator"></div>
+      <span class="status-text" id="statusText">Connecting...</span>
+      <div class="encrypt-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+          <rect x="3" y="11" width="18" height="11" rx="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        E2E ENCRYPTED
+      </div>
+    </header>
+    
+    <!-- Welcome Card -->
+    <div class="card" id="welcomeCard">
+      <div class="avatar">👋</div>
+      <h1 class="title">Get in Touch</h1>
+      <p class="subtitle">Send me a message or start a voice call</p>
+      
+      <div class="input-group">
+        <label class="input-label" for="visitorName">Your Name</label>
+        <input type="text" id="visitorName" class="input" placeholder="Enter your name..." maxlength="50" autocomplete="name">
+      </div>
+      
+      <div class="action-buttons">
+        <button class="action-btn call-btn" id="callBtn" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          Voice
+        </button>
+        <button class="action-btn video-btn" id="videoCallBtn" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="23 7 16 12 23 17 23 7"/>
+            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+          </svg>
+          Video
+        </button>
+        <button class="action-btn message-btn" id="messageBtn" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          Message
+        </button>
+      </div>
+    </div>
+    
+    <!-- Chat Card -->
+    <div class="card hidden" id="chatCard">
+      <div class="chat-container">
+        <div class="chat-header">
+          <div class="chat-header-icon">💬</div>
+          <div class="chat-header-text">
+            <h2>Chat</h2>
+            <p id="chatStatus">Send a message</p>
+          </div>
+          <button class="back-btn" id="backFromChat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="messages-list" id="messagesList"></div>
+        
+        <div class="typing-indicator" id="typingIndicator">
+          <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          Owner is typing...
+        </div>
+        
+        <div class="chat-input-container">
+          <label class="attach-btn" title="Attach file">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+              <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+            </svg>
+            <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx,.txt">
+          </label>
+          <button class="voice-btn" id="voiceBtn" title="Hold to record voice message">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              <line x1="12" y1="19" x2="12" y2="23"/>
+              <line x1="8" y1="23" x2="16" y2="23"/>
+            </svg>
+          </button>
+          <input type="text" class="chat-input" id="chatInput" placeholder="Type a message..." maxlength="1000">
+          <button class="send-btn" id="sendBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Image Preview Modal -->
+    <div class="image-modal" id="imageModal">
+      <button class="image-modal-close" id="closeModal">×</button>
+      <img id="modalImage" src="" alt="Preview">
+    </div>
+    
+    <!-- Ringing Card -->
+    <div class="card hidden ringing" id="ringingCard">
+      <div class="avatar">📞</div>
+      <h1 class="title">Calling...</h1>
+      <p class="subtitle" id="ringingStatus">Waiting for answer</p>
+      
+      <div class="visualizer">
+        <div class="visualizer-bar" style="height: 20px; animation: barPulse 0.8s infinite;"></div>
+        <div class="visualizer-bar" style="height: 35px; animation: barPulse 0.8s 0.1s infinite;"></div>
+        <div class="visualizer-bar" style="height: 25px; animation: barPulse 0.8s 0.2s infinite;"></div>
+        <div class="visualizer-bar" style="height: 40px; animation: barPulse 0.8s 0.3s infinite;"></div>
+        <div class="visualizer-bar" style="height: 30px; animation: barPulse 0.8s 0.4s infinite;"></div>
+      </div>
+      
+      <button class="action-btn" id="cancelBtn" style="background: var(--accent-danger); color: white;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+        Cancel
+      </button>
+    </div>
+    
+    <!-- In-Call Card -->
+    <div class="card hidden" id="callCard" style="max-width: 600px; padding: 20px;">
+      <!-- Video container (hidden for audio-only calls) -->
+      <div class="video-container hidden" id="videoContainer">
+        <video id="remoteVideo" autoplay playsinline></video>
+        <video id="localVideo" autoplay playsinline muted></video>
+      </div>
+      
+      <!-- Audio call UI (hidden for video calls) -->
+      <div class="audio-call-ui" id="audioCallUI">
+        <div class="avatar" id="callAvatar">🎙️</div>
+        <div class="visualizer" id="audioVisualizer">
+          <div class="visualizer-bar"></div>
+          <div class="visualizer-bar"></div>
+          <div class="visualizer-bar"></div>
+          <div class="visualizer-bar"></div>
+          <div class="visualizer-bar"></div>
+          <div class="visualizer-bar"></div>
+          <div class="visualizer-bar"></div>
+          <div class="visualizer-bar"></div>
+        </div>
+      </div>
+      
+      <p class="call-status-text" id="callStatusText">Connected</p>
+      <div class="call-timer" id="callTimer">00:00</div>
+      
+      <div class="call-controls">
+        <button class="control-btn mute" id="muteBtn" title="Mute">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="muteIcon">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+        </button>
+        <button class="control-btn camera hidden" id="cameraBtn" title="Toggle Camera">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="23 7 16 12 23 17 23 7"/>
+            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+          </svg>
+        </button>
+        <button class="control-btn end" id="endBtn" title="End Call">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+            <line x1="1" y1="1" x2="23" y2="23"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Recording Overlay -->
+    <div class="recording-overlay" id="recordingOverlay">
+      <div class="recording-dot"></div>
+      <span id="recordingTime">0:00</span>
+      <span>Recording...</span>
+    </div>
+    
+    <footer class="footer">End-to-End Encrypted • No Data Stored • Open Source</footer>
+  </div>
+  
+  <audio id="remoteAudio" autoplay></audio>
+  
+  <!-- Video call styles -->
+  <style>
+    .video-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: #000;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    
+    .video-container.hidden {
+      display: none;
+    }
+    
+    #remoteVideo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    #localVideo {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      width: 120px;
+      height: 90px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .audio-call-ui {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .audio-call-ui.hidden {
+      display: none;
+    }
+    
+    .control-btn.camera {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+    
+    .control-btn.camera.off {
+      background: var(--accent-danger);
+      color: white;
+    }
+  </style>
+  
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    // ==========================================================================
+    // STATE
+    // ==========================================================================
+    
+    let socket = null;
+    let peerConnection = null;
+    let localStream = null;
+    let roomId = null;
+    let visitorId = localStorage.getItem('visitorId') || null;
+    let visitorName = localStorage.getItem('visitorName') || '';
+    let callStartTime = null;
+    let timerInterval = null;
+    let isMuted = false;
+    let isCameraOff = false;
+    let isVideoCall = false;
+    let iceServers = [];
+    let audioContext = null;
+    let analyser = null;
+    let pendingIceCandidates = [];
+    let typingTimeout = null;
+    
+    // Voice recording
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecording = false;
+    let recordingStartTime = null;
+    let recordingTimerInterval = null;
+    
+    // ==========================================================================
+    // DOM ELEMENTS
+    // ==========================================================================
+    
+    const statusIndicator = document.getElementById('statusIndicator');
+    const statusText = document.getElementById('statusText');
+    const visitorNameInput = document.getElementById('visitorName');
+    const callBtn = document.getElementById('callBtn');
+    const videoCallBtn = document.getElementById('videoCallBtn');
+    const messageBtn = document.getElementById('messageBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const muteBtn = document.getElementById('muteBtn');
+    const cameraBtn = document.getElementById('cameraBtn');
+    const endBtn = document.getElementById('endBtn');
+    const sendBtn = document.getElementById('sendBtn');
+    const backFromChat = document.getElementById('backFromChat');
+    const chatInput = document.getElementById('chatInput');
+    const messagesList = document.getElementById('messagesList');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const fileInput = document.getElementById('fileInput');
+    const voiceBtn = document.getElementById('voiceBtn');
+    const recordingOverlay = document.getElementById('recordingOverlay');
+    const recordingTime = document.getElementById('recordingTime');
+    const imageModal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    const closeModal = document.getElementById('closeModal');
+    const welcomeCard = document.getElementById('welcomeCard');
+    const chatCard = document.getElementById('chatCard');
+    const ringingCard = document.getElementById('ringingCard');
+    const callCard = document.getElementById('callCard');
+    const callTimer = document.getElementById('callTimer');
+    const callStatusText = document.getElementById('callStatusText');
+    const remoteAudio = document.getElementById('remoteAudio');
+    const audioVisualizer = document.getElementById('audioVisualizer');
+    const videoContainer = document.getElementById('videoContainer');
+    const audioCallUI = document.getElementById('audioCallUI');
+    const remoteVideo = document.getElementById('remoteVideo');
+    const localVideo = document.getElementById('localVideo');
+    
+    // ==========================================================================
+    // INITIALIZATION
+    // ==========================================================================
+    
+    async function init() {
+      // Restore saved name
+      if (visitorName) {
+        visitorNameInput.value = visitorName;
+        callBtn.disabled = false;
+        videoCallBtn.disabled = false;
+        messageBtn.disabled = false;
+      }
+      
+      // Fetch config
+      try {
+        const response = await fetch('/api/config');
+        const config = await response.json();
+        iceServers = config.iceServers || [];
+      } catch (err) {
+        console.error('Failed to fetch config:', err);
+      }
+      
+      // Register or get visitor ID
+      await registerVisitor();
+      
+      // Connect socket
+      connectSocket();
+      
+      // Setup events
+      setupEventListeners();
+    }
+    
+    async function registerVisitor() {
+      try {
+        const response = await fetch('/api/visitor/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            visitorId, 
+            name: visitorNameInput.value || 'Anonymous' 
+          })
+        });
+        const data = await response.json();
+        visitorId = data.visitorId;
+        localStorage.setItem('visitorId', visitorId);
+      } catch (err) {
+        console.error('Visitor registration error:', err);
+      }
+    }
+    
+    function connectSocket() {
+      socket = io({ reconnection: true, reconnectionAttempts: 10 });
+      
+      socket.on('connect', () => {
+        console.log('Connected');
+        updateStatus(true);
+        if (visitorId) {
+          socket.emit('join-visitor-room', visitorId);
+        }
+      });
+      
+      socket.on('disconnect', () => {
+        console.log('Disconnected');
+        updateStatus(false);
+      });
+      
+      // Call events
+      socket.on('call-initiated', (data) => {
+        roomId = data.roomId;
+        console.log('Call initiated, room:', roomId);
+      });
+      
+      socket.on('call-answered', () => {
+        console.log('Call answered');
+        document.getElementById('ringingStatus').textContent = 'Connecting...';
+      });
+      
+      socket.on('call-declined', () => {
+        console.log('Call declined');
+        showCard('welcome');
+        alert('Call was declined');
+      });
+      
+      socket.on('offer', async (data) => {
+        console.log('Received offer');
+        await handleOffer(data);
+      });
+      
+      socket.on('answer', async (data) => {
+        console.log('Received answer');
+        await handleAnswer(data);
+      });
+      
+      socket.on('ice-candidate', async (data) => {
+        await handleIceCandidate(data);
+      });
+      
+      socket.on('call-ended', () => {
+        console.log('Call ended');
+        endCall(false);
+      });
+      
+      // Message events
+      socket.on('new-message', (data) => {
+        if (data.senderType === 'owner') {
+          addMessageToUI(data.content, 'owner', data.createdAt, {
+            filename: data.filename,
+            originalName: data.originalName,
+            mimeType: data.mimeType
+          });
+          messagesList.scrollTop = messagesList.scrollHeight;
+        }
+      });
+      
+      socket.on('owner-typing', (data) => {
+        typingIndicator.classList.toggle('visible', data.isTyping);
+      });
+      
+      // Read receipts - when owner reads messages
+      socket.on('messages-read', (data) => {
+        const { messageIds, readAt } = data;
+        messageIds.forEach(id => {
+          const msgEl = messagesList.querySelector(`[data-message-id="${id}"]`);
+          if (msgEl) {
+            const statusEl = msgEl.querySelector('.message-status');
+            if (statusEl) {
+              statusEl.innerHTML = '<span class="check read">✓</span><span class="check read">✓</span>';
+            }
+          }
+        });
+      });
+    }
+    
+    function setupEventListeners() {
+      visitorNameInput.addEventListener('input', () => {
+        const hasName = visitorNameInput.value.trim().length > 0;
+        callBtn.disabled = !hasName;
+        videoCallBtn.disabled = !hasName;
+        messageBtn.disabled = !hasName;
+        localStorage.setItem('visitorName', visitorNameInput.value);
+      });
+      
+      callBtn.addEventListener('click', () => initiateCall(false));
+      videoCallBtn.addEventListener('click', () => initiateCall(true));
+      messageBtn.addEventListener('click', openChat);
+      cancelBtn.addEventListener('click', cancelCall);
+      muteBtn.addEventListener('click', toggleMute);
+      cameraBtn.addEventListener('click', toggleCamera);
+      endBtn.addEventListener('click', () => endCall(true));
+      backFromChat.addEventListener('click', () => showCard('welcome'));
+      sendBtn.addEventListener('click', sendMessage);
+      
+      chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+      
+      chatInput.addEventListener('input', () => {
+        // Send typing indicator
+        socket.emit('typing', { visitorId, isTyping: true });
+        
+        clearTimeout(typingTimeout);
+        typingTimeout = setTimeout(() => {
+          socket.emit('typing', { visitorId, isTyping: false });
+        }, 1000);
+      });
+      
+      // File upload
+      fileInput.addEventListener('change', handleFileUpload);
+      
+      // Voice recording - hold to record
+      voiceBtn.addEventListener('mousedown', startRecording);
+      voiceBtn.addEventListener('mouseup', stopRecording);
+      voiceBtn.addEventListener('mouseleave', stopRecording);
+      voiceBtn.addEventListener('touchstart', (e) => { e.preventDefault(); startRecording(); });
+      voiceBtn.addEventListener('touchend', stopRecording);
+      
+      // Image modal
+      closeModal.addEventListener('click', () => {
+        imageModal.classList.remove('active');
+      });
+      
+      imageModal.addEventListener('click', (e) => {
+        if (e.target === imageModal) {
+          imageModal.classList.remove('active');
+        }
+      });
+    }
+    
+    // ==========================================================================
+    // MESSAGING
+    // ==========================================================================
+    
+    async function openChat() {
+      visitorName = visitorNameInput.value.trim();
+      await registerVisitor();
+      
+      showCard('chat');
+      await loadMessages();
+    }
+    
+    async function loadMessages() {
+      try {
+        const response = await fetch(`/api/messages/${visitorId}`);
+        const data = await response.json();
+        
+        messagesList.innerHTML = '';
+        data.messages.forEach(msg => {
+          addMessageToUI(msg.content, msg.senderType, msg.createdAt, {
+            filename: msg.filename,
+            originalName: msg.originalName,
+            mimeType: msg.mimeType
+          }, msg.id, msg.isRead);
+        });
+        
+        messagesList.scrollTop = messagesList.scrollHeight;
+      } catch (err) {
+        console.error('Load messages error:', err);
+      }
+    }
+    
+    async function sendMessage() {
+      const message = chatInput.value.trim();
+      if (!message) return;
+      
+      chatInput.value = '';
+      sendBtn.disabled = true;
+      
+      try {
+        const response = await fetch('/api/messages/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ visitorId, message, name: visitorName })
+        });
+        
+        if (response.ok) {
+          addMessageToUI(message, 'visitor', new Date().toISOString());
+          messagesList.scrollTop = messagesList.scrollHeight;
+        }
+      } catch (err) {
+        console.error('Send message error:', err);
+      }
+      
+      sendBtn.disabled = false;
+    }
+    
+    function addMessageToUI(content, senderType, timestamp, attachment = null, messageId = null, isRead = false) {
+      const div = document.createElement('div');
+      div.className = `message ${senderType}`;
+      if (messageId) div.dataset.messageId = messageId;
+      
+      const time = new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      let attachmentHTML = '';
+      if (attachment && attachment.filename) {
+        if (attachment.mimeType && attachment.mimeType.startsWith('audio/')) {
+          // Voice message
+          attachmentHTML = `
+            <div class="voice-message">
+              <audio controls src="/uploads/${attachment.filename}"></audio>
+            </div>
+          `;
+        } else if (attachment.mimeType && attachment.mimeType.startsWith('image/')) {
+          attachmentHTML = `
+            <img src="/uploads/${attachment.filename}" alt="${attachment.originalName}" 
+                 class="message-image" onclick="showImageModal('/uploads/${attachment.filename}')">
+          `;
+        } else {
+          attachmentHTML = `
+            <a href="/uploads/${attachment.filename}" target="_blank" class="message-file" download="${attachment.originalName}">
+              <span class="file-icon">📎</span>
+              <div class="file-info">
+                <div class="file-name">${attachment.originalName}</div>
+              </div>
+            </a>
+          `;
+        }
+      }
+      
+      // Read receipt for visitor's own messages
+      let readReceiptHTML = '';
+      if (senderType === 'visitor') {
+        readReceiptHTML = `
+          <div class="message-status">
+            <span class="check ${isRead ? 'read' : ''}">✓</span>
+            ${isRead ? '<span class="check read">✓</span>' : ''}
+          </div>
+        `;
+      }
+      
+      div.innerHTML = `
+        ${attachmentHTML}
+        <div>${content}</div>
+        <div class="message-time">${time}${readReceiptHTML}</div>
+      `;
+      
+      messagesList.appendChild(div);
+    }
+    
+    // Show image in modal
+    window.showImageModal = function(src) {
+      modalImage.src = src;
+      imageModal.classList.add('active');
+    };
+    
+    // Handle file upload
+    async function handleFileUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      // Check file size (10MB max)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File too large. Maximum size is 10MB.');
+        fileInput.value = '';
+        return;
+      }
+      
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('visitorId', visitorId);
+      formData.append('name', visitorName);
+      
+      sendBtn.disabled = true;
+      
+      try {
+        const response = await fetch('/api/messages/upload', {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          addMessageToUI(data.message.content, 'visitor', data.message.createdAt, {
+            filename: data.message.filename,
+            originalName: data.message.originalName,
+            mimeType: data.message.mimeType
+          });
+          messagesList.scrollTop = messagesList.scrollHeight;
+        } else {
+          const err = await response.json();
+          alert(err.error || 'Upload failed');
+        }
+      } catch (err) {
+        console.error('Upload error:', err);
+        alert('Upload failed');
+      }
+      
+      sendBtn.disabled = false;
+      fileInput.value = '';
+    }
+    
+    // ==========================================================================
+    // VOICE RECORDING
+    // ==========================================================================
+    
+    async function startRecording() {
+      if (isRecording) return;
+      
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        
+        mediaRecorder.ondataavailable = (e) => {
+          audioChunks.push(e.data);
+        };
+        
+        mediaRecorder.onstop = async () => {
+          stream.getTracks().forEach(track => track.stop());
+          
+          if (audioChunks.length > 0) {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            await uploadVoiceMessage(audioBlob);
+          }
+        };
+        
+        mediaRecorder.start();
+        isRecording = true;
+        recordingStartTime = Date.now();
+        
+        voiceBtn.classList.add('recording');
+        recordingOverlay.classList.add('active');
+        
+        // Update recording timer
+        recordingTimerInterval = setInterval(() => {
+          const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+          const mins = Math.floor(elapsed / 60);
+          const secs = elapsed % 60;
+          recordingTime.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        }, 100);
+        
+      } catch (err) {
+        console.error('Recording error:', err);
+        alert('Could not access microphone');
+      }
+    }
+    
+    function stopRecording() {
+      if (!isRecording || !mediaRecorder) return;
+      
+      mediaRecorder.stop();
+      isRecording = false;
+      
+      voiceBtn.classList.remove('recording');
+      recordingOverlay.classList.remove('active');
+      
+      if (recordingTimerInterval) {
+        clearInterval(recordingTimerInterval);
+        recordingTimerInterval = null;
+      }
+    }
+    
+    async function uploadVoiceMessage(audioBlob) {
+      const formData = new FormData();
+      formData.append('file', audioBlob, `voice-${Date.now()}.webm`);
+      formData.append('visitorId', visitorId);
+      formData.append('name', visitorName);
+      formData.append('messageType', 'voice');
+      
+      try {
+        const response = await fetch('/api/messages/upload', {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          addMessageToUI(data.message.content, 'visitor', data.message.createdAt, {
+            filename: data.message.filename,
+            originalName: data.message.originalName,
+            mimeType: data.message.mimeType
+          }, data.message.id, false);
+          messagesList.scrollTop = messagesList.scrollHeight;
+        }
+      } catch (err) {
+        console.error('Voice upload error:', err);
+      }
+    }
+    
+    // ==========================================================================
+    // CALLING
+    // ==========================================================================
+    
+    async function initiateCall(withVideo = false) {
+      visitorName = visitorNameInput.value.trim();
+      if (!visitorName) return;
+      
+      isVideoCall = withVideo;
+      await registerVisitor();
+      
+      try {
+        const constraints = {
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+        };
+        
+        if (withVideo) {
+          constraints.video = { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } };
+        }
+        
+        localStream = await navigator.mediaDevices.getUserMedia(constraints);
+        
+        // Show local video preview if video call
+        if (withVideo && localVideo) {
+          localVideo.srcObject = localStream;
+        }
+        
+        showCard('ringing');
+        socket.emit('initiate-call', { callerName: visitorName, visitorId, isVideoCall: withVideo });
+        
+      } catch (err) {
+        console.error('Media error:', err);
+        alert(`Could not access ${withVideo ? 'camera and microphone' : 'microphone'}. Please grant permission.`);
+      }
+    }
+    
+    function cancelCall() {
+      if (roomId) {
+        socket.emit('cancel-call', { roomId });
+      }
+      cleanupCall();
+      showCard('welcome');
+    }
+    
+    async function handleOffer(data) {
+      const { offer, senderId, roomId: offerRoomId } = data;
+      if (offerRoomId && !roomId) roomId = offerRoomId;
+      
+      console.log('Handling offer, roomId:', roomId);
+      
+      try {
+        await createPeerConnection(senderId);
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+        await processPendingIceCandidates();
+        
+        const answer = await peerConnection.createAnswer();
+        await peerConnection.setLocalDescription(answer);
+        
+        socket.emit('answer', { roomId, answer: peerConnection.localDescription, targetId: senderId });
+      } catch (err) {
+        console.error('Offer error:', err);
+      }
+    }
+    
+    async function handleAnswer(data) {
+      try {
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+        await processPendingIceCandidates();
+      } catch (err) {
+        console.error('Answer error:', err);
+      }
+    }
+    
+    async function handleIceCandidate(data) {
+      if (!data.candidate) return;
+      
+      try {
+        if (peerConnection && peerConnection.remoteDescription) {
+          await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+        } else {
+          pendingIceCandidates.push(data.candidate);
+        }
+      } catch (err) {
+        console.error('ICE error:', err);
+      }
+    }
+    
+    async function processPendingIceCandidates() {
+      while (pendingIceCandidates.length > 0) {
+        const candidate = pendingIceCandidates.shift();
+        try {
+          await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+        } catch (err) {
+          console.error('Queued ICE error:', err);
+        }
+      }
+    }
+    
+    async function createPeerConnection(targetId) {
+      const config = { iceServers: iceServers.length > 0 ? iceServers : [{ urls: 'stun:stun.l.google.com:19302' }] };
+      
+      console.log('Creating peer connection, video:', isVideoCall);
+      peerConnection = new RTCPeerConnection(config);
+      
+      if (localStream) {
+        localStream.getTracks().forEach(track => {
+          console.log('Adding track:', track.kind);
+          peerConnection.addTrack(track, localStream);
+        });
+      }
+      
+      peerConnection.onicecandidate = (event) => {
+        if (event.candidate) {
+          console.log('Sending ICE candidate');
+          socket.emit('ice-candidate', { roomId, candidate: event.candidate, targetId });
+        }
+      };
+      
+      peerConnection.onconnectionstatechange = () => {
+        console.log('Connection state:', peerConnection.connectionState);
+        if (peerConnection.connectionState === 'connected') {
+          showCard('call');
+          startCallTimer();
+          
+          // Setup UI based on call type
+          if (isVideoCall) {
+            videoContainer.classList.remove('hidden');
+            audioCallUI.classList.add('hidden');
+            cameraBtn.classList.remove('hidden');
+          } else {
+            videoContainer.classList.add('hidden');
+            audioCallUI.classList.remove('hidden');
+            cameraBtn.classList.add('hidden');
+            setupAudioVisualizer();
+          }
+        } else if (peerConnection.connectionState === 'failed') {
+          callStatusText.textContent = 'Connection failed';
+        }
+      };
+      
+      peerConnection.oniceconnectionstatechange = () => {
+        console.log('ICE state:', peerConnection.iceConnectionState);
+      };
+      
+      peerConnection.ontrack = (event) => {
+        console.log('Remote track received:', event.track.kind);
+        if (event.track.kind === 'video') {
+          remoteVideo.srcObject = event.streams[0];
+        } else {
+          remoteAudio.srcObject = event.streams[0];
+        }
+      };
+    }
+    
+    // Toggle camera on/off
+    function toggleCamera() {
+      if (!localStream) return;
+      const videoTrack = localStream.getVideoTracks()[0];
+      if (videoTrack) {
+        isCameraOff = !isCameraOff;
+        videoTrack.enabled = !isCameraOff;
+        cameraBtn.classList.toggle('off', isCameraOff);
+      }
+    }
+    
+    function endCall(notifyPeer = true) {
+      if (notifyPeer && roomId) {
+        socket.emit('end-call', { roomId });
+      }
+      cleanupCall();
+      showCard('welcome');
+    }
+    
+    function cleanupCall() {
+      if (timerInterval) clearInterval(timerInterval);
+      if (localStream) localStream.getTracks().forEach(t => t.stop());
+      if (peerConnection) peerConnection.close();
+      if (audioContext) audioContext.close();
+      
+      peerConnection = null;
+      localStream = null;
+      roomId = null;
+      callStartTime = null;
+      timerInterval = null;
+      isMuted = false;
+      isCameraOff = false;
+      isVideoCall = false;
+      audioContext = null;
+      pendingIceCandidates = [];
+      
+      // Reset video elements
+      if (localVideo) localVideo.srcObject = null;
+      if (remoteVideo) remoteVideo.srcObject = null;
+      videoContainer.classList.add('hidden');
+      audioCallUI.classList.remove('hidden');
+      cameraBtn.classList.add('hidden');
+      cameraBtn.classList.remove('off');
+      
+      muteBtn.classList.remove('active');
+      callTimer.textContent = '00:00';
+    }
+    
+    function toggleMute() {
+      if (!localStream) return;
+      isMuted = !isMuted;
+      localStream.getAudioTracks().forEach(t => t.enabled = !isMuted);
+      muteBtn.classList.toggle('active', isMuted);
+    }
+    
+    // ==========================================================================
+    // UI HELPERS
+    // ==========================================================================
+    
+    function updateStatus(online) {
+      statusIndicator.classList.toggle('online', online);
+      statusText.textContent = online ? 'Online' : 'Connecting...';
+    }
+    
+    function showCard(type) {
+      welcomeCard.classList.toggle('hidden', type !== 'welcome');
+      chatCard.classList.toggle('hidden', type !== 'chat');
+      ringingCard.classList.toggle('hidden', type !== 'ringing');
+      callCard.classList.toggle('hidden', type !== 'call');
+    }
+    
+    function startCallTimer() {
+      callStartTime = Date.now();
+      timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - callStartTime) / 1000);
+        const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
+        const secs = (elapsed % 60).toString().padStart(2, '0');
+        callTimer.textContent = `${mins}:${secs}`;
+      }, 1000);
+    }
+    
+    function setupAudioVisualizer() {
+      try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 32;
+        
+        const source = audioContext.createMediaStreamSource(localStream);
+        source.connect(analyser);
+        
+        const bars = audioVisualizer.querySelectorAll('.visualizer-bar');
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+        
+        function update() {
+          if (!audioContext) return;
+          analyser.getByteFrequencyData(dataArray);
+          bars.forEach((bar, i) => {
+            bar.style.height = `${Math.max(4, (dataArray[i] || 0) / 255 * 50)}px`;
+          });
+          requestAnimationFrame(update);
+        }
+        update();
+      } catch (err) {
+        console.error('Visualizer error:', err);
+      }
+    }
+    
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(console.error);
+    }
+    
+    init();
+  </script>
+</body>
+</html>
