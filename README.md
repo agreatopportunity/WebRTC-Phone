@@ -56,6 +56,7 @@ A self-hosted, encrypted calling **AND** messaging system with authentication, M
 
 ### 1. Prerequisites
 
+- **HTTPS** - Required for WebRTC and Push Notifications
 - Node.js 18+
 - MySQL 8+ (or MariaDB)
 
@@ -130,6 +131,108 @@ npm start
 - **Call notifications** - answer from any device
 - **Push notifications** - works even when browser closed
 
+# In another terminal, create a Cloudflare tunnel
+cloudflared tunnel --url http://localhost:3000
+```
+
+Or configure a persistent tunnel in your Cloudflare dashboard pointing to `localhost:3000`.
+
+### Option B: Nginx Reverse Proxy
+
+```nginx
+server {
+    listen 443 ssl http2;
+    server_name phone.yourdomain.com;
+
+    ssl_certificate /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+### Option C: Direct with Let's Encrypt
+
+```bash
+# Install certbot
+sudo apt install certbot
+
+# Get certificate
+sudo certbot certonly --standalone -d phone.yourdomain.com
+
+# Update server.js to use HTTPS (see https-server.js example)
+```
+
+## 📱 Installing the PWA
+
+### On Your Phone (Owner)
+
+1. Open `https://your-domain.com/owner` in Chrome/Safari
+2. Tap "Add to Home Screen" (or the install icon in the address bar)
+3. Grant notification permissions when prompted
+4. The app icon will appear on your home screen
+
+### For Visitors
+
+1. Share your URL: `https://your-domain.com`
+2. They can call directly from their browser
+3. Optionally, they can install it as a PWA too
+
+
+### Gmail App Password
+
+If using Gmail for email notifications:
+1. Go to https://myaccount.google.com/apppasswords
+2. Generate a new app password
+3. Use that password in `SMTP_PASS`
+
+## 🔊 TURN Server (Optional)
+
+For better connectivity through restrictive NATs/firewalls, set up a TURN server:
+
+### Using coturn
+
+```bash
+# Install
+sudo apt install coturn
+
+# Configure /etc/turnserver.conf
+listening-port=3478
+tls-listening-port=5349
+fingerprint
+lt-cred-mech
+user=username:password
+realm=your-domain.com
+cert=/path/to/cert.pem
+pkey=/path/to/key.pem
+
+# Start
+sudo systemctl enable coturn
+sudo systemctl start coturn
+```
+
+Then add to your server config:
+
+```javascript
+iceServers: [
+  { urls: 'stun:stun.l.google.com:19302' },
+  { 
+    urls: 'turn:your-domain.com:3478',
+    username: 'username',
+    credential: 'password'
+  }
+]
+```
+   
 ## 🔧 Configuration
 
 ### Environment Variables
@@ -260,6 +363,8 @@ WantedBy=multi-user.target
 sudo systemctl enable webrtc-phone
 sudo systemctl start webrtc-phone
 ```
+
+
 
 ## 📄 License
 
