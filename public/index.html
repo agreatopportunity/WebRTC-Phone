@@ -211,11 +211,13 @@
     /* Action Buttons */
     .action-buttons {
       display: flex;
+      flex-wrap: wrap;
       gap: 12px;
+      justify-content: center;
     }
     
     .action-btn {
-      flex: 1;
+      flex: 0 0 calc(50% - 6px);
       padding: 16px;
       border: none;
       border-radius: 12px;
