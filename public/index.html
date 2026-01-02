@@ -276,8 +276,146 @@
       background: linear-gradient(135deg, #f59e0b, #d97706);
       color: white;  
     }
-
+    
     .email-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+    }
+
+    /* Email Modal */
+    .email-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .email-modal.active {
+      display: flex;
+    }
+    
+    .email-modal-content {
+      background: var(--bg-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 32px;
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+      animation: modalSlideIn 0.3s ease;
+    }
+    
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .email-modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: var(--text-secondary);
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .email-modal-close:hover {
+      background: var(--accent-danger);
+      color: white;
+    }
+    
+    .email-modal-content h2 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    
+    .email-modal-subtitle {
+      text-align: center;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+    
+    .email-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    .form-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: var(--bg-tertiary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: var(--text-primary);
+      font-size: 15px;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(0, 255, 204, 0.1);
+    }
+    
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    
+    .form-group select {
+      cursor: pointer;
+    }
+    
+    .email-submit-btn {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .email-submit-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
     }
@@ -873,6 +1011,53 @@
         </div>
       </div>
     </div>
+
+ <!-- Email Form Modal -->
+    <div class="email-modal" id="emailModal">
+      <div class="email-modal-content">
+        <button class="email-modal-close" id="closeEmailModal">×</button>
+        <h2>📧 Send Me a Message</h2>
+        <p class="email-modal-subtitle">Fill out the form below</p>
+        
+        <div class="email-form">
+          <div class="form-group">
+            <label>Your Email Address *</label>
+            <input type="email" id="contactEmail" placeholder="your@email.com" required>
+          </div>
+          
+          <div class="form-group">
+            <label>Phone Number (optional)</label>
+            <input type="tel" id="contactPhone" placeholder="(555) 123-4567">
+          </div>
+          
+          <div class="form-group">
+            <label>Reason for Contact *</label>
+            <select id="contactReason">
+              <option value="">Select a reason...</option>
+              <option value="Business Inquiry">💼 Business Inquiry</option>
+              <option value="Project Collaboration">🤝 Project Collaboration</option>
+              <option value="Technical Question">💻 Technical Question</option>
+              <option value="Job Opportunity">📋 Job Opportunity</option>
+              <option value="Just Saying Hello">👋 Just Saying Hello</option>
+              <option value="Other">📌 Other</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>Your Message *</label>
+            <textarea id="contactMessage" rows="4" placeholder="What would you like to discuss?"></textarea>
+          </div>
+          
+          <button class="email-submit-btn" id="submitEmailForm">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+            Open Email & Send
+          </button>
+        </div>
+      </div>
+    </div>   
     
     <!-- Image Preview Modal -->
     <div class="image-modal" id="imageModal">
@@ -1340,13 +1525,91 @@
       sendBtn.disabled = false;
     }
 
-    function openEmail() {
-      visitorName = visitorNameInput.value.trim();
-      const email = 'agreatopportunity@gmail.com'; // <-- YOUR EMAIL HERE
-      const subject = encodeURIComponent(`Message from ${visitorName}`);
-      const body = encodeURIComponent(`Hi,\n\nMy name is ${visitorName}.\n\n`);
-      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+function openEmail() {
+      // Show the modal
+      document.getElementById('emailModal').classList.add('active');
     }
+    
+    // Close email modal
+    document.getElementById('closeEmailModal').addEventListener('click', () => {
+      document.getElementById('emailModal').classList.remove('active');
+    });
+    
+    // Click outside to close
+    document.getElementById('emailModal').addEventListener('click', (e) => {
+      if (e.target.id === 'emailModal') {
+        document.getElementById('emailModal').classList.remove('active');
+      }
+    });
+    
+    // Submit email form
+    document.getElementById('submitEmailForm').addEventListener('click', () => {
+      const contactEmail = document.getElementById('contactEmail').value.trim();
+      const contactPhone = document.getElementById('contactPhone').value.trim();
+      const contactReason = document.getElementById('contactReason').value;
+      const contactMessage = document.getElementById('contactMessage').value.trim();
+      
+      // Validation
+      if (!contactEmail) {
+        alert('Please enter your email address');
+        return;
+      }
+      if (!contactReason) {
+        alert('Please select a reason for contact');
+        return;
+      }
+      if (!contactMessage) {
+        alert('Please enter a message');
+        return;
+      }
+      
+      visitorName = visitorNameInput.value.trim();
+      
+      const now = new Date();
+      const timestamp = now.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      
+      const email = 'YOUR_EMAIL_HERE@gmail.com';
+      const subject = encodeURIComponent(`${contactReason} - ${visitorName}`);
+      const body = encodeURIComponent(`Hi YOUR NAME,
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+📋 CONTACT FORM
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+👤 Name: ${visitorName}
+📧 Email: ${contactEmail}
+📱 Phone: ${contactPhone || 'Not provided'}
+📅 Sent: ${timestamp}
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+📌 REASON FOR CONTACT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+${contactReason}
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+💬 MESSAGE
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+${contactMessage}
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Sent via HomeBase Contact`);
+      
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${email}&su=${subject}&body=${body}`;
+      window.open(gmailUrl, '_blank');
+      
+      // Close modal after opening email
+      document.getElementById('emailModal').classList.remove('active');
+    });
     
     function addMessageToUI(content, senderType, timestamp, attachment = null, messageId = null, isRead = false) {
       const div = document.createElement('div');
