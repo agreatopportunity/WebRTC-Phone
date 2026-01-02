@@ -62,7 +62,8 @@
       position: relative;
       z-index: 1;
       display: flex;
-      min-height: 100vh;
+      height: 100vh;
+      overflow: hidden;
     }
     
     /* Sidebar */
@@ -72,6 +73,8 @@
       border-right: 1px solid rgba(255, 255, 255, 0.05);
       display: flex;
       flex-direction: column;
+      height: 100%;
+      overflow: hidden;
     }
     
     .sidebar-header {
@@ -258,6 +261,8 @@
       display: flex;
       flex-direction: column;
       background: var(--bg-primary);
+      height: 100%;
+      overflow: hidden;
     }
     
     /* Chat View */
@@ -265,6 +270,7 @@
       display: flex;
       flex-direction: column;
       height: 100%;
+      overflow: hidden;
     }
     
     .chat-header {
@@ -568,6 +574,16 @@
       display: none;
     }
     
+    .audio-call-ui {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .audio-call-ui.hidden {
+      display: none;
+    }
+    
     #activeRemoteVideo {
       width: 100%;
       height: 100%;
@@ -786,6 +802,7 @@
     }
     
     /* Active Call View */
+    /* Active Call View */
     .active-call-view {
       display: none;
       flex-direction: column;
@@ -793,6 +810,7 @@
       justify-content: center;
       height: 100%;
       padding: 40px;
+      overflow-y: auto;
     }
     
     .active-call-view.active {
@@ -883,9 +901,15 @@
     
     /* Mobile */
     @media (max-width: 768px) {
-      .sidebar { width: 100%; position: absolute; z-index: 10; }
-      .main-content { width: 100%; }
+      .sidebar { 
+        width: 100%; 
+        position: absolute; 
+        z-index: 10;
+        height: 100%;
+      }
+      .main-content { width: 100%; height: 100%; }
       .sidebar.hidden { display: none; }
+      .video-container { max-width: 100%; }
     }
   </style>
 </head>
