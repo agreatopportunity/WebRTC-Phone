@@ -270,6 +270,16 @@
       box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
     }
     
+    .email-btn {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;  
+    }
+
+    .email-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+    }
+    
     /* Message Chat */
     .chat-container {
       display: flex;
@@ -793,6 +803,13 @@
           </svg>
           Video
         </button>
+        <button class="action-btn email-btn" id="emailBtn" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          Email
+        </button>        
         <button class="action-btn message-btn" id="messageBtn" disabled>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -1039,6 +1056,7 @@
     const visitorNameInput = document.getElementById('visitorName');
     const callBtn = document.getElementById('callBtn');
     const videoCallBtn = document.getElementById('videoCallBtn');
+    const emailBtn = document.getElementById('emailBtn');
     const messageBtn = document.getElementById('messageBtn');
     const cancelBtn = document.getElementById('cancelBtn');
     const muteBtn = document.getElementById('muteBtn');
@@ -1079,6 +1097,7 @@
         visitorNameInput.value = visitorName;
         callBtn.disabled = false;
         videoCallBtn.disabled = false;
+        emailBtn.disabled = false;
         messageBtn.disabled = false;
       }
       
@@ -1207,6 +1226,7 @@
         const hasName = visitorNameInput.value.trim().length > 0;
         callBtn.disabled = !hasName;
         videoCallBtn.disabled = !hasName;
+        emailBtn.disabled = !hasName;       
         messageBtn.disabled = !hasName;
         localStorage.setItem('visitorName', visitorNameInput.value);
       });
@@ -1214,6 +1234,7 @@
       callBtn.addEventListener('click', () => initiateCall(false));
       videoCallBtn.addEventListener('click', () => initiateCall(true));
       messageBtn.addEventListener('click', openChat);
+      emailBtn.addEventListener('click', openEmail);      
       cancelBtn.addEventListener('click', cancelCall);
       muteBtn.addEventListener('click', toggleMute);
       cameraBtn.addEventListener('click', toggleCamera);
@@ -1315,6 +1336,14 @@
       }
       
       sendBtn.disabled = false;
+    }
+
+    function openEmail() {
+      visitorName = visitorNameInput.value.trim();
+      const email = 'agreatopportunity@gmail.com'; // <-- YOUR EMAIL HERE
+      const subject = encodeURIComponent(`Message from ${visitorName}`);
+      const body = encodeURIComponent(`Hi,\n\nMy name is ${visitorName}.\n\n`);
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     }
     
     function addMessageToUI(content, senderType, timestamp, attachment = null, messageId = null, isRead = false) {
