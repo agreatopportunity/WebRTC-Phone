@@ -379,9 +379,6 @@ sudo systemctl start webrtc-phone
 
 # TODO 
 ```
-Read receipts (✓✓ like WhatsApp)
-Voice messages (record & send audio clips)
-Video calling (just add video track to WebRTC)
 Multiple owner accounts (team support)
 Canned responses (quick reply templates)
 Mobile app (React Native or PWA enhancement)
