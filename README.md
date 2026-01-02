@@ -7,7 +7,7 @@ A self-hosted, encrypted calling **AND** messaging system with authentication, M
 - **💬 Messaging** - Real-time chat alongside voice calls
 - **🔐 Authentication** - Password-protected owner dashboard  
 - **🗄️ MySQL Storage** - Messages persist across sessions
-- **📥 Inbox View** - Full conversation management
+- **📥 Inbox View** - Full conversation management, in Index.html around line 1300 enter your email address and your name
 - **🔔 Unified Notifications** - Push/email for both calls AND messages
 
 ## 🏗️ Architecture
