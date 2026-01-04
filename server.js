@@ -22,6 +22,7 @@ import bcrypt from 'bcrypt';
 import session from 'express-session';
 import MySQLStore from 'express-mysql-session';
 import { v4 as uuidv4 } from 'uuid';
+import twilio from 'twilio';
 import multer from 'multer';
 import { existsSync, mkdirSync } from 'fs';
 
@@ -36,6 +37,12 @@ const io = new Server(server, {
     methods: ["GET", "POST"]
   }
 });
+// =============================================================================
+// Twilio client
+// =============================================================================
+const twilioClient = process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN
+  ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
+  : null;
 
 // =============================================================================
 // CONFIGURATION
@@ -366,10 +373,24 @@ app.get('/login', (req, res) => {
 });
 
 // Public config (no secrets)
-app.get('/api/config', (req, res) => {
+app.get('/api/config', async (req, res) => {
+  let iceServers = CONFIG.iceServers; // fallback
+  
+  // Use Twilio's TURN servers if available (more reliable)
+  if (twilioClient) {
+    try {
+      const token = await twilioClient.tokens.create();
+      iceServers = token.iceServers;
+      console.log('Using Twilio TURN servers');
+    } catch (err) {
+      console.error('Twilio TURN error:', err.message);
+      // Fall back to configured servers
+    }
+  }
+  
   res.json({
     vapidPublicKey: CONFIG.vapid.publicKey,
-    iceServers: CONFIG.iceServers
+    iceServers
   });
 });
 
@@ -917,6 +938,92 @@ app.post('/api/owner/subscribe', requireAuth, async (req, res) => {
   }
 });
 
+// =============================================================================
+// CALLING CONFIG API
+// =============================================================================
+
+// Get calling options
+app.get('/api/calling/config', requireAuth, (req, res) => {
+  res.json({
+    twilioEnabled: !!twilioClient && !!process.env.TWILIO_PHONE_NUMBER,
+    sipEnabled: !!process.env.SIP_SERVER && !!process.env.SIP_USERNAME,
+    sipServer: process.env.SIP_SERVER || null,
+  });
+});
+
+// =============================================================================
+// TWILIO API
+// =============================================================================
+
+// Make outbound call
+app.post('/api/twilio/call', requireAuth, async (req, res) => {
+  if (!twilioClient) {
+    return res.status(500).json({ error: 'Twilio not configured' });
+  }
+  
+  const { to } = req.body;
+  if (!to) {
+    return res.status(400).json({ error: 'Phone number required' });
+  }
+  
+  try {
+    // Format number
+    let formattedNumber = to.replace(/[^0-9+]/g, '');
+    if (!formattedNumber.startsWith('+')) {
+      formattedNumber = '+1' + formattedNumber; // Default to US
+    }
+    
+    const call = await twilioClient.calls.create({
+      to: formattedNumber,
+      from: process.env.TWILIO_PHONE_NUMBER,
+      url: `https://${process.env.DOMAIN}/api/twilio/voice`,
+    });
+    
+    console.log('Twilio call initiated:', call.sid);
+    res.json({ success: true, callSid: call.sid });
+  } catch (err) {
+    console.error('Twilio error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// TwiML voice response
+app.all('/api/twilio/voice', (req, res) => {
+  const VoiceResponse = twilio.twiml.VoiceResponse;
+  const response = new VoiceResponse();
+  
+  response.say('Connecting you now.');
+  response.dial().client('owner');
+  
+  res.type('text/xml');
+  res.send(response.toString());
+});
+
+// Twilio token for browser calling
+app.get('/api/twilio/token', requireAuth, (req, res) => {
+  if (!process.env.TWILIO_API_KEY || !process.env.TWILIO_API_SECRET) {
+    return res.status(500).json({ error: 'Twilio API keys not configured' });
+  }
+  
+  const AccessToken = twilio.jwt.AccessToken;
+  const VoiceGrant = AccessToken.VoiceGrant;
+  
+  const token = new AccessToken(
+    process.env.TWILIO_ACCOUNT_SID,
+    process.env.TWILIO_API_KEY,
+    process.env.TWILIO_API_SECRET,
+    { identity: 'owner' }
+  );
+  
+  const voiceGrant = new VoiceGrant({
+    outgoingApplicationSid: process.env.TWILIO_TWIML_APP_SID,
+    incomingAllow: true,
+  });
+  
+  token.addGrant(voiceGrant);
+  res.json({ token: token.toJwt() });
+});
+
 // Health check
 app.get('/api/health', async (req, res) => {
   let dbStatus = 'disconnected';
@@ -968,13 +1075,14 @@ io.on('connection', (socket) => {
   // =========== CALLING ===========
   
   socket.on('initiate-call', async (data) => {
-    const { callerName, visitorId } = data;
+    const { callerName, visitorId, isVideoCall } = data;
     const roomId = `call-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     
     rooms.set(roomId, {
       caller: socket.id,
       callerName,
       visitorId,
+      isVideoCall: isVideoCall || false,
       owner: null,
       status: 'ringing',
       createdAt: Date.now()
@@ -983,17 +1091,22 @@ io.on('connection', (socket) => {
     socket.join(roomId);
     socket.roomId = roomId;
     
-    console.log(`Call initiated by ${callerName} in room ${roomId}`);
+    console.log(`${isVideoCall ? 'Video' : 'Voice'} call initiated by ${callerName} in room ${roomId}`);
     
-    // Notify owner
+    // Notify owner with video flag
     io.to('owner-room').emit('incoming-call', {
       roomId,
       callerName,
       callerId: socket.id,
-      visitorId
+      visitorId,
+      isVideoCall: isVideoCall || false
     });
     
-    await sendPushNotification('📞 Incoming Call', `${callerName} is calling`, { type: 'call', roomId });
+    await sendPushNotification(
+      isVideoCall ? '📹 Incoming Video Call' : '📞 Incoming Call', 
+      `${callerName} is calling`, 
+      { type: 'call', roomId }
+    );
     await sendEmailNotification('call', { callerName });
     
     socket.emit('call-initiated', { roomId, status: 'ringing' });
