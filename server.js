@@ -742,6 +742,38 @@ app.get('/api/owner/conversations', requireAuth, async (req, res) => {
   }
 });
 
+// Delete a conversation
+app.delete('/api/owner/conversations/:id', requireAuth, async (req, res) => {
+  const { id } = req.params;
+  
+  try {
+    // Delete messages first (foreign key constraint)
+    await db.execute('DELETE FROM messages WHERE conversation_id = ?', [id]);
+    // Delete the conversation
+    await db.execute('DELETE FROM conversations WHERE id = ?', [id]);
+    
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Delete conversation error:', err);
+    res.status(500).json({ error: 'Failed to delete conversation' });
+  }
+});
+
+// Clear all conversations
+app.delete('/api/owner/conversations', requireAuth, async (req, res) => {
+  try {
+    await db.execute('DELETE FROM messages');
+    await db.execute('DELETE FROM call_logs');
+    await db.execute('DELETE FROM conversations');
+    await db.execute('DELETE FROM visitors');
+    
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Clear all error:', err);
+    res.status(500).json({ error: 'Failed to clear conversations' });
+  }
+});
+
 // Get conversation messages
 app.get('/api/owner/conversations/:id/messages', requireAuth, async (req, res) => {
   const { id } = req.params;
