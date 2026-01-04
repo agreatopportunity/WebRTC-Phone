@@ -46,6 +46,18 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
+
+    #matrixCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.6;
+      filter: blur(0.5px);
+    }    
+    
     
     .bg-grid {
       position: fixed;
@@ -903,6 +915,7 @@
   </style>
 </head>
 <body>
+  <canvas id="matrixCanvas"></canvas>
   <div class="bg-grid"></div>
   
   <div class="container">
@@ -2069,6 +2082,107 @@ Sent via HomeBase Contact`);
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js').catch(console.error);
     }
+
+// ==========================================================================
+    // MATRIX RAIN ANIMATION
+    // ==========================================================================
+    
+    const matrixCanvas = document.getElementById('matrixCanvas');
+    const matrixCtx = matrixCanvas.getContext('2d');
+    
+    // Set canvas size
+    function resizeMatrix() {
+      matrixCanvas.width = window.innerWidth;
+      matrixCanvas.height = window.innerHeight;
+    }
+    resizeMatrix();
+    window.addEventListener('resize', resizeMatrix);
+    
+    // Matrix characters - mix of symbols and characters
+    const matrixChars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*()+=<>?/|\\[]{}~';
+    const chars = matrixChars.split('');
+    
+    // Column settings
+    const fontSize = 14;
+    let columns = Math.floor(matrixCanvas.width / fontSize);
+    let drops = [];
+    
+    // Initialize drops
+    function initDrops() {
+      columns = Math.floor(matrixCanvas.width / fontSize);
+      drops = [];
+      for (let i = 0; i < columns; i++) {
+        drops[i] = Math.random() * -100;
+      }
+    }
+    initDrops();
+    window.addEventListener('resize', initDrops);
+    
+    // Hyper blue color palette
+    const blueColors = [
+      'rgba(0, 255, 255, 0.9)',   // Cyan
+      'rgba(0, 204, 255, 0.8)',   // Light blue
+      'rgba(0, 153, 255, 0.7)',   // Sky blue
+      'rgba(0, 255, 204, 0.85)',  // Turquoise
+      'rgba(51, 255, 255, 0.9)',  // Bright cyan
+    ];
+    
+    function drawMatrix() {
+      // Semi-transparent black to create trail effect
+      matrixCtx.fillStyle = 'rgba(10, 10, 26, 0.05)';
+      matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+      
+      matrixCtx.font = `${fontSize}px 'JetBrains Mono', monospace`;
+      
+      for (let i = 0; i < drops.length; i++) {
+        // Random character
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        
+        // Position
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+        
+        // Color - brighter at the head of the stream
+        const headY = drops[i] * fontSize;
+        const distFromHead = 0;
+        
+        // Create gradient effect - head is brightest
+        if (Math.random() > 0.98) {
+          // Occasional bright flash
+          matrixCtx.fillStyle = '#ffffff';
+          matrixCtx.shadowBlur = 20;
+          matrixCtx.shadowColor = '#00ffff';
+        } else if (Math.random() > 0.9) {
+          // Bright cyan head
+          matrixCtx.fillStyle = '#00ffff';
+          matrixCtx.shadowBlur = 15;
+          matrixCtx.shadowColor = '#00ffff';
+        } else {
+          // Regular blue characters
+          matrixCtx.fillStyle = blueColors[Math.floor(Math.random() * blueColors.length)];
+          matrixCtx.shadowBlur = 0;
+        }
+        
+        matrixCtx.fillText(char, x, y);
+        
+        // Reset shadow
+        matrixCtx.shadowBlur = 0;
+        
+        // Reset drop when it goes off screen
+        if (y > matrixCanvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        
+        // Move drop down
+        drops[i]++;
+      }
+      
+      requestAnimationFrame(drawMatrix);
+    }
+    
+    // Start the animation
+    drawMatrix();
+    
     
     init();
   </script>
