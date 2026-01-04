@@ -375,6 +375,86 @@ cat .env | grep MYSQL
 | `GET` | `/api/calling/config` | Get calling options |
 | `POST` | `/api/twilio/call` | Initiate Twilio call |
 
+## Custom Icon for Page
+
+Easy! Find this in your `index.html` (around line 780):
+
+```html
+<div class="avatar">👋</div>
+```
+
+**Replace with any of these options:**
+
+---
+
+## Option 1: Different Emoji
+```html
+<div class="avatar">💬</div>
+```
+
+Other good emojis:
+- 📞 Phone
+- 🎙️ Microphone  
+- 💻 Computer
+- 🚀 Rocket
+- ⚡ Lightning
+- 🔷 Diamond
+- 👨‍💻 Tech person
+- 🤖 Robot
+- 🌐 Globe
+- ✨ Sparkles
+
+---
+
+## Option 2: Your Initials
+```html
+<div class="avatar" style="font-size: 36px; font-weight: 700;">YOUR INTIALS</div>
+```
+
+---
+
+## Option 3: Custom Image
+```html
+<div class="avatar" style="padding: 0; overflow: hidden;">
+  <img src="/your-photo.jpg" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
+</div>
+```
+
+---
+
+## Option 4: SVG Icon
+```html
+<div class="avatar">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="50" height="50">
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+  </svg>
+</div>
+```
+
+---
+
+## Option 5: Animated Icon (CSS)
+
+**HTML:**
+```html
+<div class="avatar pulse-icon">📡</div>
+```
+
+**Add to CSS:**
+```css
+.pulse-icon {
+  animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+```
+
+---
+
+
 ## 🗺️ Roadmap
 
 - [ ] Full SIP.js browser integration
