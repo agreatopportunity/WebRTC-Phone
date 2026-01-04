@@ -155,6 +155,362 @@
       letter-spacing: 1px;
       margin-top: 4px;
     }
+
+/* Quick Call Button */
+    .quick-call-section {
+      padding: 15px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .quick-call-btn {
+      width: 100%;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #06b6d4, #0891b2);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+    }
+    
+    .quick-call-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3);
+    }
+    
+    /* Phone Modal */
+    .phone-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .phone-modal.active {
+      display: flex;
+    }
+    
+    .phone-modal-content {
+      background: var(--bg-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 30px;
+      text-align: center;
+      max-width: 340px;
+      width: 100%;
+      position: relative;
+      animation: modalSlideIn 0.3s ease;
+    }
+    
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .phone-modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    
+    .phone-modal-close:hover {
+      background: var(--accent-danger);
+      color: white;
+    }
+    
+    .phone-avatar {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #06b6d4, #0891b2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 15px;
+    }
+
+    /* Call Type Selector */
+    .call-type-selector {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+      background: var(--bg-tertiary);
+      padding: 5px;
+      border-radius: 12px;
+    }
+    
+    .call-type-btn {
+      flex: 1;
+      padding: 10px 6px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .call-type-btn:hover {
+      color: var(--text-primary);
+    }
+    
+    .call-type-btn.active {
+      background: var(--bg-primary);
+      color: var(--accent-primary);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .call-type-btn.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+    
+    /* SIP Input */
+    .sip-input-container {
+      margin-bottom: 15px;
+    }
+    
+    .sip-input-container.hidden {
+      display: none;
+    }
+    
+    .sip-input-container input {
+      width: 100%;
+      background: var(--bg-tertiary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 16px;
+      color: var(--text-primary);
+      text-align: center;
+    }
+    
+    .sip-input-container input:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+    }
+    
+    /* Dial Status */
+    .dial-status {
+      padding: 25px;
+      background: var(--bg-tertiary);
+      border-radius: 16px;
+      text-align: center;
+    }
+    
+    .dial-status.hidden {
+      display: none;
+    }
+    
+    .dial-status-icon {
+      font-size: 50px;
+      margin-bottom: 15px;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    
+    .dial-status-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+    }
+    
+    .dial-status-number {
+      font-size: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+    
+    .dial-status-timer {
+      font-size: 36px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent-primary);
+      margin-bottom: 20px;
+    }
+    
+    .dial-hangup-btn {
+      background: var(--accent-danger);
+      color: white;
+      border: none;
+      padding: 14px 40px;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .dial-hangup-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 20px rgba(255, 68, 102, 0.4);
+    }
+    
+    /* Call Type Info */
+    .call-type-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      background: rgba(0, 255, 204, 0.05);
+      border-radius: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 15px;
+    }
+    
+    .call-type-info .info-icon {
+      font-size: 16px;
+    }
+    
+
+    .phone-modal-content h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .phone-display {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .phone-display input {
+      flex: 1;
+      background: var(--bg-tertiary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
+      text-align: center;
+      letter-spacing: 2px;
+    }
+    
+    .phone-display input:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+    }
+    
+    .backspace-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .backspace-btn:hover {
+      background: var(--accent-danger);
+      color: white;
+    }
+    
+    .dial-pad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .dial-btn {
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      font-size: 28px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    
+    .dial-btn span {
+      font-size: 9px;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      margin-top: 2px;
+    }
+    
+    .dial-btn:hover {
+      background: rgba(0, 255, 204, 0.1);
+      border-color: var(--accent-primary);
+    }
+    
+    .dial-btn:active {
+      transform: scale(0.95);
+      background: rgba(0, 255, 204, 0.2);
+    }
+    
+    .dial-actions {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+    
+    .dial-action-btn {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    
+    .dial-action-btn.call {
+      background: linear-gradient(135deg, var(--accent-call), #00cc6a);
+      color: var(--bg-primary);
+    }
+    
+    .dial-action-btn.sms {
+      background: linear-gradient(135deg, var(--accent-message), #5b21b6);
+      color: white;
+    }
+    
+    .dial-action-btn:hover {
+      transform: scale(1.1);
+    }
+    
+    .dial-action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }  
     
     /* Conversations List */
     .conversations-header {
@@ -944,7 +1300,16 @@
           <div class="label">Unread</div>
         </div>
       </div>
-      
+
+      <div class="quick-call-section">
+        <button class="quick-call-btn" id="quickCallBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          Quick Call
+        </button>
+      </div>
+
       <div class="conversations-header">
         <h2>Messages</h2>
       </div>
@@ -1083,6 +1448,7 @@
   <div class="call-overlay" id="callOverlay">
     <div class="call-card">
       <div class="call-avatar" id="incomingCallAvatar">📞</div>
+      <p class="incoming-call-type" id="incomingCallType">📞 Voice Call</p>
       <div class="call-type" id="incomingCallType">Incoming Call</div>
       <div class="call-name" id="incomingCallerName">Unknown</div>
       <div class="call-actions">
@@ -1097,6 +1463,78 @@
             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
           </svg>
         </button>
+      </div>
+    </div>
+  </div>
+
+<!-- Phone Modal with Dial Pad -->
+  <div class="phone-modal" id="phoneModal">
+    <div class="phone-modal-content">
+      <button class="phone-modal-close" id="closePhoneModal">×</button>
+      <div class="phone-avatar">📱</div>
+      <h2>Dial Pad</h2>
+      
+      <!-- Call Type Selector -->
+      <div class="call-type-selector">
+        <button class="call-type-btn active" data-type="device">📱 Device</button>
+        <button class="call-type-btn" data-type="sip">🌐 SIP</button>
+        <button class="call-type-btn" data-type="twilio">☎️ Twilio</button>
+      </div>
+      
+      <!-- Phone Number Input -->
+      <div class="phone-display" id="phoneDisplay">
+        <input type="tel" id="phoneInput" placeholder="Enter number..." readonly>
+        <button class="backspace-btn" id="backspaceBtn">⌫</button>
+      </div>
+      
+      <!-- SIP Address Input (hidden by default) -->
+      <div class="sip-input-container hidden" id="sipInputContainer">
+        <input type="text" id="sipAddress" placeholder="user@sip2sip.info">
+      </div>
+      
+      <!-- Dial Pad -->
+      <div class="dial-pad" id="dialPad">
+        <button class="dial-btn" data-digit="1">1</button>
+        <button class="dial-btn" data-digit="2">2<span>ABC</span></button>
+        <button class="dial-btn" data-digit="3">3<span>DEF</span></button>
+        <button class="dial-btn" data-digit="4">4<span>GHI</span></button>
+        <button class="dial-btn" data-digit="5">5<span>JKL</span></button>
+        <button class="dial-btn" data-digit="6">6<span>MNO</span></button>
+        <button class="dial-btn" data-digit="7">7<span>PQRS</span></button>
+        <button class="dial-btn" data-digit="8">8<span>TUV</span></button>
+        <button class="dial-btn" data-digit="9">9<span>WXYZ</span></button>
+        <button class="dial-btn" data-digit="*">*</button>
+        <button class="dial-btn" data-digit="0">0<span>+</span></button>
+        <button class="dial-btn" data-digit="#">#</button>
+      </div>
+      
+      <!-- Call/SMS Buttons -->
+      <div class="dial-actions" id="dialActions">
+        <button class="dial-action-btn call" id="dialCallBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+        </button>
+        <button class="dial-action-btn sms" id="dialSmsBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </button>
+      </div>
+      
+      <!-- In-Call Status (hidden by default) -->
+      <div class="dial-status hidden" id="dialStatus">
+        <div class="dial-status-icon">📞</div>
+        <div class="dial-status-text" id="dialStatusText">Calling...</div>
+        <div class="dial-status-number" id="dialStatusNumber"></div>
+        <div class="dial-status-timer" id="dialStatusTimer">00:00</div>
+        <button class="dial-hangup-btn" id="dialHangupBtn">End Call</button>
+      </div>
+      
+      <!-- Info Footer -->
+      <div class="call-type-info" id="callTypeInfo">
+        <span class="info-icon">📱</span>
+        <span class="info-text">Uses your phone's dialer</span>
       </div>
     </div>
   </div>
@@ -1196,7 +1634,6 @@
     const audioCallUI = document.getElementById('audioCallUI');
     const activeRemoteVideo = document.getElementById('activeRemoteVideo');
     const activeLocalVideo = document.getElementById('activeLocalVideo');
-    
     // ==========================================================================
     // INIT
     // ==========================================================================
@@ -1240,7 +1677,15 @@
       // Call events
       socket.on('incoming-call', (data) => {
         currentCall = data;
+        isVideoCall = data.isVideoCall || false;
         incomingCallerName.textContent = data.callerName || 'Unknown';
+        
+        // Update call overlay to show call type
+        const callTypeLabel = document.getElementById('incomingCallType');
+        if (callTypeLabel) {
+          callTypeLabel.textContent = isVideoCall ? '📹 Video Call' : '📞 Voice Call';
+        }
+        
         callOverlay.classList.add('active');
       });
       
@@ -1542,9 +1987,25 @@
       if (!currentCall) return;
       
       try {
-        localStream = await navigator.mediaDevices.getUserMedia({
+        // Request video if it's a video call
+        const constraints = {
           audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-        });
+        };
+        
+        if (isVideoCall) {
+          constraints.video = { 
+            facingMode: 'user', 
+            width: { ideal: 640 }, 
+            height: { ideal: 480 } 
+          };
+        }
+        
+        localStream = await navigator.mediaDevices.getUserMedia(constraints);
+        
+        // Show local video preview if video call
+        if (isVideoCall && activeLocalVideo) {
+          activeLocalVideo.srcObject = localStream;
+        }
         
         callOverlay.classList.remove('active');
         emptyChat.classList.add('hidden');
@@ -1553,10 +2014,21 @@
         activeCallName.textContent = currentCall.callerName || 'Caller';
         activeCallStatus.textContent = 'Connecting...';
         
+        // Setup UI based on call type
+        if (isVideoCall) {
+          videoContainer.classList.remove('hidden');
+          audioCallUI.classList.add('hidden');
+          cameraBtn.classList.remove('hidden');
+        } else {
+          videoContainer.classList.add('hidden');
+          audioCallUI.classList.remove('hidden');
+          cameraBtn.classList.add('hidden');
+        }
+        
         socket.emit('answer-call', { roomId: currentCall.roomId });
       } catch (err) {
         console.error('Media error:', err);
-        alert('Could not access microphone');
+        alert(`Could not access ${isVideoCall ? 'camera and microphone' : 'microphone'}`);
       }
     }
     
@@ -1640,7 +2112,12 @@
       };
       
       peerConnection.ontrack = (event) => {
-        remoteAudio.srcObject = event.streams[0];
+        console.log('Remote track received:', event.track.kind);
+        if (event.track.kind === 'video' && activeRemoteVideo) {
+          activeRemoteVideo.srcObject = event.streams[0];
+        } else if (event.track.kind === 'audio') {
+          activeRemoteAudio.srcObject = event.streams[0];
+        }
       };
     }
     
@@ -1673,6 +2150,15 @@
       
       muteBtn.classList.remove('active');
       activeCallTimer.textContent = '00:00';
+      
+      // Reset video elements
+      if (activeLocalVideo) activeLocalVideo.srcObject = null;
+      if (activeRemoteVideo) activeRemoteVideo.srcObject = null;
+      videoContainer.classList.add('hidden');
+      audioCallUI.classList.remove('hidden');
+      cameraBtn.classList.add('hidden');
+      cameraBtn.classList.remove('off');
+      isVideoCall = false;
     }
     
     function toggleMute() {
@@ -1724,6 +2210,265 @@
     }
     
     init();
+
+    // ==========================================================================
+    // DIAL PAD / PHONE MODAL
+    // ==========================================================================
+    
+    const phoneInput = document.getElementById('phoneInput');
+    const sipAddressInput = document.getElementById('sipAddress');
+    const dialPad = document.getElementById('dialPad');
+    const sipInputContainer = document.getElementById('sipInputContainer');
+    const phoneDisplay = document.getElementById('phoneDisplay');
+    const callTypeInfo = document.getElementById('callTypeInfo');
+    const dialStatus = document.getElementById('dialStatus');
+    const dialActions = document.getElementById('dialActions');
+    const dialStatusText = document.getElementById('dialStatusText');
+    const dialStatusNumber = document.getElementById('dialStatusNumber');
+    const dialStatusTimer = document.getElementById('dialStatusTimer');
+    
+    let currentCallType = 'device';
+    let dialTimerInterval = null;
+    let dialStartTime = null;
+    let currentTwilioCall = null;
+    
+    // Open modal
+    document.getElementById('quickCallBtn').addEventListener('click', async () => {
+      document.getElementById('phoneModal').classList.add('active');
+      phoneInput.value = '';
+      if (sipAddressInput) sipAddressInput.value = '';
+      hideDialStatus();
+      await checkCallingConfig();
+    });
+    
+    // Close modal
+    document.getElementById('closePhoneModal').addEventListener('click', () => {
+      document.getElementById('phoneModal').classList.remove('active');
+      hangupCall();
+    });
+    
+    document.getElementById('phoneModal').addEventListener('click', (e) => {
+      if (e.target.id === 'phoneModal') {
+        document.getElementById('phoneModal').classList.remove('active');
+        hangupCall();
+      }
+    });
+    
+    // Check available calling options
+    async function checkCallingConfig() {
+      try {
+        const response = await fetch('/api/calling/config');
+        const config = await response.json();
+        
+        document.querySelectorAll('.call-type-btn').forEach(btn => {
+          const type = btn.dataset.type;
+          if (type === 'twilio' && !config.twilioEnabled) {
+            btn.classList.add('disabled');
+            btn.title = 'Twilio not configured';
+          } else if (type === 'sip' && !config.sipEnabled) {
+            btn.classList.add('disabled');
+            btn.title = 'SIP not configured';
+          } else {
+            btn.classList.remove('disabled');
+            btn.title = '';
+          }
+        });
+      } catch (err) {
+        console.error('Failed to check calling config:', err);
+      }
+    }
+    
+    // Call type selector
+    document.querySelectorAll('.call-type-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.classList.contains('disabled')) return;
+        
+        document.querySelectorAll('.call-type-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCallType = btn.dataset.type;
+        updateCallTypeUI();
+      });
+    });
+    
+    function updateCallTypeUI() {
+      const isSip = currentCallType === 'sip';
+      
+      sipInputContainer.classList.toggle('hidden', !isSip);
+      phoneDisplay.classList.toggle('hidden', isSip);
+      dialPad.classList.toggle('hidden', isSip);
+      document.getElementById('dialSmsBtn').style.display = isSip ? 'none' : 'flex';
+      
+      const infoMap = {
+        device: { icon: '📱', text: 'Opens your phone\'s dialer' },
+        sip: { icon: '🌐', text: 'Free call to SIP addresses' },
+        twilio: { icon: '☎️', text: 'Call real phone numbers (uses credits)' }
+      };
+      
+      const info = infoMap[currentCallType];
+      callTypeInfo.innerHTML = `<span class="info-icon">${info.icon}</span><span class="info-text">${info.text}</span>`;
+    }
+    
+    // Dial pad
+    document.querySelectorAll('.dial-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (phoneInput.value.length < 15) {
+          phoneInput.value += btn.dataset.digit;
+        }
+      });
+    });
+    
+    // Backspace
+    document.getElementById('backspaceBtn').addEventListener('click', () => {
+      phoneInput.value = phoneInput.value.slice(0, -1);
+    });
+    
+    let backspaceTimer;
+    document.getElementById('backspaceBtn').addEventListener('mousedown', () => {
+      backspaceTimer = setTimeout(() => phoneInput.value = '', 500);
+    });
+    document.getElementById('backspaceBtn').addEventListener('mouseup', () => {
+      clearTimeout(backspaceTimer);
+    });
+    
+    // Call button
+    document.getElementById('dialCallBtn').addEventListener('click', () => {
+      const number = phoneInput.value.replace(/[^0-9*#+]/g, '');
+      const sipAddr = sipAddressInput ? sipAddressInput.value.trim() : '';
+      
+      switch (currentCallType) {
+        case 'device':
+          if (number.length >= 3) {
+            window.location.href = `tel:${number}`;
+          } else {
+            alert('Please enter a valid phone number');
+          }
+          break;
+          
+        case 'sip':
+          if (sipAddr && sipAddr.includes('@')) {
+            makeSipCall(sipAddr);
+          } else {
+            alert('Please enter a valid SIP address (e.g., user@sip2sip.info)');
+          }
+          break;
+          
+        case 'twilio':
+          if (number.length >= 10) {
+            makeTwilioCall(number);
+          } else {
+            alert('Please enter a full phone number with area code');
+          }
+          break;
+      }
+    });
+    
+    // SMS button
+    document.getElementById('dialSmsBtn').addEventListener('click', () => {
+      const number = phoneInput.value.replace(/[^0-9*#]/g, '');
+      if (number.length >= 3) {
+        window.location.href = `sms:${number}`;
+      } else {
+        alert('Please enter a valid phone number');
+      }
+    });
+    
+    // Hangup button
+    document.getElementById('dialHangupBtn').addEventListener('click', hangupCall);
+    
+    // ==========================================================================
+    // SIP CALLING (Free)
+    // ==========================================================================
+    
+    function makeSipCall(sipUri) {
+      showDialStatus('Connecting via SIP...', sipUri);
+      // SIP.js integration would go here
+      // For now, show a message
+      setTimeout(() => {
+        alert('SIP calling requires SIP.js setup. Configure your SIP account in .env first.');
+        hideDialStatus();
+      }, 1000);
+    }
+    
+    // ==========================================================================
+    // TWILIO CALLING
+    // ==========================================================================
+    
+    async function makeTwilioCall(number) {
+      showDialStatus('Connecting via Twilio...', number);
+      
+      try {
+        const response = await fetch('/api/twilio/call', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ to: number })
+        });
+        
+        const data = await response.json();
+        
+        if (data.error) {
+          alert('Call failed: ' + data.error);
+          hideDialStatus();
+          return;
+        }
+        
+        dialStatusText.textContent = 'Call connected';
+        startDialTimer();
+        
+      } catch (err) {
+        console.error('Twilio error:', err);
+        alert('Failed to connect call');
+        hideDialStatus();
+      }
+    }
+    
+    // ==========================================================================
+    // DIAL STATUS HELPERS
+    // ==========================================================================
+    
+    function showDialStatus(text, number = '') {
+      dialStatus.classList.remove('hidden');
+      dialStatusText.textContent = text;
+      dialStatusNumber.textContent = number;
+      dialStatusTimer.textContent = '00:00';
+      dialPad.classList.add('hidden');
+      dialActions.classList.add('hidden');
+      sipInputContainer.classList.add('hidden');
+      phoneDisplay.classList.add('hidden');
+      callTypeInfo.style.display = 'none';
+      document.querySelector('.call-type-selector').style.display = 'none';
+    }
+    
+    function hideDialStatus() {
+      dialStatus.classList.add('hidden');
+      dialActions.classList.remove('hidden');
+      callTypeInfo.style.display = 'flex';
+      document.querySelector('.call-type-selector').style.display = 'flex';
+      stopDialTimer();
+      updateCallTypeUI();
+    }
+    
+    function startDialTimer() {
+      dialStartTime = Date.now();
+      dialTimerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - dialStartTime) / 1000);
+        const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
+        const secs = (elapsed % 60).toString().padStart(2, '0');
+        dialStatusTimer.textContent = `${mins}:${secs}`;
+      }, 1000);
+    }
+    
+    function stopDialTimer() {
+      if (dialTimerInterval) {
+        clearInterval(dialTimerInterval);
+        dialTimerInterval = null;
+      }
+    }
+    
+    function hangupCall() {
+      stopDialTimer();
+      hideDialStatus();
+      // TODO: Actually hang up Twilio/SIP calls
+    }     
   </script>
 </body>
 </html>
