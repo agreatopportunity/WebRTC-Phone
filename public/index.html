@@ -46,7 +46,8 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
-
+    
+    /* Matrix Canvas */
     #matrixCanvas {
       position: fixed;
       top: 0;
@@ -56,9 +57,8 @@
       z-index: 0;
       opacity: 0.6;
       filter: blur(0.5px);
-    }    
-    
-    
+    }
+
     .bg-grid {
       position: fixed;
       inset: 0;
@@ -161,6 +161,82 @@
     
     .hidden { display: none !important; }
     
+    /* Modal Overlay */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(8px);
+    }
+    
+    .modal-overlay.active {
+      display: flex;
+    }
+    
+    .modal-card {
+      background: var(--bg-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 24px;
+      padding: 30px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+      animation: modalPopIn 0.3s ease;
+    }
+    
+    .modal-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+      opacity: 0.5;
+    }
+    
+    @keyframes modalPopIn {
+      from { 
+        opacity: 0; 
+        transform: scale(0.9) translateY(-20px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: scale(1) translateY(0); 
+      }
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      z-index: 10;
+    }
+    
+    .modal-close:hover {
+      background: var(--accent-danger);
+      color: white;
+    }
+
     /* Welcome Card */
     .avatar {
       width: 100px;
@@ -286,7 +362,7 @@
     
     .email-btn {
       background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: white;  
+      color: white;
     }
     
     .email-btn:hover:not(:disabled) {
@@ -431,13 +507,13 @@
       transform: translateY(-2px);
       box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
     }
-    
+
     /* Message Chat */
     .chat-container {
       display: flex;
       flex-direction: column;
-      height: 500px;
-      max-height: 70vh;
+      height: 450px;
+      max-height: 60vh;
     }
     
     .chat-header {
@@ -912,10 +988,26 @@
       color: var(--text-muted);
       font-family: 'JetBrains Mono', monospace;
     }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .pulse-icon {
+      animation: iconPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes iconPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
   </style>
 </head>
 <body>
-  <canvas id="matrixCanvas"></canvas>
+<canvas id="matrixCanvas"></canvas>
   <div class="bg-grid"></div>
   
   <div class="container">
@@ -933,7 +1025,9 @@
     
     <!-- Welcome Card -->
     <div class="card" id="welcomeCard">
-      <div class="avatar">👋</div>
+      <div class="avatar pulse-icon">📡</div>
+    </div>
+
       <h1 class="title">Get in Touch</h1>
       <p class="subtitle">Send me a message or start a voice call</p>
       
@@ -962,7 +1056,7 @@
             <polyline points="22,6 12,13 2,6"/>
           </svg>
           Email
-        </button>        
+        </button>
         <button class="action-btn message-btn" id="messageBtn" disabled>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -973,59 +1067,56 @@
     </div>
     
     <!-- Chat Card -->
-    <div class="card hidden" id="chatCard">
-      <div class="chat-container">
-        <div class="chat-header">
-          <div class="chat-header-icon">💬</div>
-          <div class="chat-header-text">
-            <h2>Chat</h2>
-            <p id="chatStatus">Send a message</p>
+    <div class="modal-overlay" id="chatModal">
+      <div class="modal-card">
+        <button class="modal-close" id="closeChatModal">×</button>
+        <div class="chat-container">
+          <div class="chat-header">
+            <div class="chat-header-icon">💬</div>
+            <div class="chat-header-text">
+              <h2>Chat</h2>
+              <p id="chatStatus">Send a message</p>
+            </div>
           </div>
-          <button class="back-btn" id="backFromChat">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-          </button>
-        </div>
-        
-        <div class="messages-list" id="messagesList"></div>
-        
-        <div class="typing-indicator" id="typingIndicator">
-          <div class="typing-dots">
-            <span></span>
-            <span></span>
-            <span></span>
+          
+          <div class="messages-list" id="messagesList"></div>
+          
+          <div class="typing-indicator" id="typingIndicator">
+            <div class="typing-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            Owner is typing...
           </div>
-          Owner is typing...
-        </div>
-        
-        <div class="chat-input-container">
-          <label class="attach-btn" title="Attach file">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-              <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
-            </svg>
-            <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx,.txt">
-          </label>
-          <button class="voice-btn" id="voiceBtn" title="Hold to record voice message">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-              <line x1="12" y1="19" x2="12" y2="23"/>
-              <line x1="8" y1="23" x2="16" y2="23"/>
-            </svg>
-          </button>
-          <input type="text" class="chat-input" id="chatInput" placeholder="Type a message..." maxlength="1000">
-          <button class="send-btn" id="sendBtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-              <line x1="22" y1="2" x2="11" y2="13"/>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-            </svg>
-          </button>
+          
+          <div class="chat-input-container">
+            <label class="attach-btn" title="Attach file">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+              </svg>
+              <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx,.txt">
+            </label>
+            <button class="voice-btn" id="voiceBtn" title="Hold to record voice message">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            </button>
+            <input type="text" class="chat-input" id="chatInput" placeholder="Type a message..." maxlength="1000">
+            <button class="send-btn" id="sendBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-
- <!-- Email Form Modal -->
+    </div>    
+<!-- Email Form Modal -->
     <div class="email-modal" id="emailModal">
       <div class="email-modal-content">
         <button class="email-modal-close" id="closeEmailModal">×</button>
@@ -1070,8 +1161,8 @@
           </button>
         </div>
       </div>
-    </div>   
-    
+    </div>
+
     <!-- Image Preview Modal -->
     <div class="image-modal" id="imageModal">
       <button class="image-modal-close" id="closeModal">×</button>
@@ -1079,78 +1170,85 @@
     </div>
     
     <!-- Ringing Card -->
-    <div class="card hidden ringing" id="ringingCard">
-      <div class="avatar">📞</div>
-      <h1 class="title">Calling...</h1>
-      <p class="subtitle" id="ringingStatus">Waiting for answer</p>
-      
-      <div class="visualizer">
-        <div class="visualizer-bar" style="height: 20px; animation: barPulse 0.8s infinite;"></div>
-        <div class="visualizer-bar" style="height: 35px; animation: barPulse 0.8s 0.1s infinite;"></div>
-        <div class="visualizer-bar" style="height: 25px; animation: barPulse 0.8s 0.2s infinite;"></div>
-        <div class="visualizer-bar" style="height: 40px; animation: barPulse 0.8s 0.3s infinite;"></div>
-        <div class="visualizer-bar" style="height: 30px; animation: barPulse 0.8s 0.4s infinite;"></div>
+    <div class="modal-overlay" id="ringingModal">
+      <div class="modal-card ringing" style="text-align: center;">
+        <button class="modal-close" id="closeRingingModal">×</button>
+        <div class="avatar">📞</div>
+        <h1 class="title">Calling...</h1>
+        <p class="subtitle" id="ringingStatus">Waiting for answer</p>
+        
+        <div class="visualizer">
+          <div class="visualizer-bar" style="height: 20px; animation: barPulse 0.8s infinite;"></div>
+          <div class="visualizer-bar" style="height: 35px; animation: barPulse 0.8s 0.1s infinite;"></div>
+          <div class="visualizer-bar" style="height: 25px; animation: barPulse 0.8s 0.2s infinite;"></div>
+          <div class="visualizer-bar" style="height: 40px; animation: barPulse 0.8s 0.3s infinite;"></div>
+          <div class="visualizer-bar" style="height: 30px; animation: barPulse 0.8s 0.4s infinite;"></div>
+        </div>
+        
+        <button class="action-btn" id="cancelBtn" style="background: var(--accent-danger); color: white; width: 100%;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+          Cancel Call
+        </button>
       </div>
-      
-      <button class="action-btn" id="cancelBtn" style="background: var(--accent-danger); color: white;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"/>
-          <line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-        Cancel
-      </button>
     </div>
     
     <!-- In-Call Card -->
-    <div class="card hidden" id="callCard" style="max-width: 600px; padding: 20px;">
-      <!-- Video container (hidden for audio-only calls) -->
-      <div class="video-container hidden" id="videoContainer">
-        <video id="remoteVideo" autoplay playsinline></video>
-        <video id="localVideo" autoplay playsinline muted></video>
-      </div>
-      
-      <!-- Audio call UI (hidden for video calls) -->
-      <div class="audio-call-ui" id="audioCallUI">
-        <div class="avatar" id="callAvatar">🎙️</div>
-        <div class="visualizer" id="audioVisualizer">
-          <div class="visualizer-bar"></div>
-          <div class="visualizer-bar"></div>
-          <div class="visualizer-bar"></div>
-          <div class="visualizer-bar"></div>
-          <div class="visualizer-bar"></div>
-          <div class="visualizer-bar"></div>
-          <div class="visualizer-bar"></div>
-          <div class="visualizer-bar"></div>
+    <div class="modal-overlay" id="callModal">
+      <div class="modal-card" style="max-width: 600px; text-align: center;">
+        <button class="modal-close" id="closeCallModal">×</button>
+        
+        <!-- Video container (hidden for audio-only calls) -->
+        <div class="video-container hidden" id="videoContainer">
+          <video id="remoteVideo" autoplay playsinline></video>
+          <video id="localVideo" autoplay playsinline muted></video>
+        </div>
+        
+        <!-- Audio call UI (hidden for video calls) -->
+        <div class="audio-call-ui" id="audioCallUI">
+          <div class="avatar" id="callAvatar">🎙️</div>
+          <div class="visualizer" id="audioVisualizer">
+            <div class="visualizer-bar"></div>
+            <div class="visualizer-bar"></div>
+            <div class="visualizer-bar"></div>
+            <div class="visualizer-bar"></div>
+            <div class="visualizer-bar"></div>
+            <div class="visualizer-bar"></div>
+            <div class="visualizer-bar"></div>
+            <div class="visualizer-bar"></div>
+          </div>
+        </div>
+        
+        <p class="call-status-text" id="callStatusText">Connected</p>
+        <div class="call-timer" id="callTimer">00:00</div>
+        
+        <div class="call-controls">
+          <button class="control-btn mute" id="muteBtn" title="Mute">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="muteIcon">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              <line x1="12" y1="19" x2="12" y2="23"/>
+              <line x1="8" y1="23" x2="16" y2="23"/>
+            </svg>
+          </button>
+          <button class="control-btn camera hidden" id="cameraBtn" title="Toggle Camera">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="23 7 16 12 23 17 23 7"/>
+              <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+            </svg>
+          </button>
+          <button class="control-btn end" id="endBtn" title="End Call">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
         </div>
       </div>
-      
-      <p class="call-status-text" id="callStatusText">Connected</p>
-      <div class="call-timer" id="callTimer">00:00</div>
-      
-      <div class="call-controls">
-        <button class="control-btn mute" id="muteBtn" title="Mute">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="muteIcon">
-            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-            <line x1="12" y1="19" x2="12" y2="23"/>
-            <line x1="8" y1="23" x2="16" y2="23"/>
-          </svg>
-        </button>
-        <button class="control-btn camera hidden" id="cameraBtn" title="Toggle Camera">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="23 7 16 12 23 17 23 7"/>
-            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-          </svg>
-        </button>
-        <button class="control-btn end" id="endBtn" title="End Call">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-            <line x1="1" y1="1" x2="23" y2="23"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-    
+    </div>    
+
     <!-- Recording Overlay -->
     <div class="recording-overlay" id="recordingOverlay">
       <div class="recording-dot"></div>
@@ -1263,7 +1361,6 @@
     const cameraBtn = document.getElementById('cameraBtn');
     const endBtn = document.getElementById('endBtn');
     const sendBtn = document.getElementById('sendBtn');
-    const backFromChat = document.getElementById('backFromChat');
     const chatInput = document.getElementById('chatInput');
     const messagesList = document.getElementById('messagesList');
     const typingIndicator = document.getElementById('typingIndicator');
@@ -1274,10 +1371,6 @@
     const imageModal = document.getElementById('imageModal');
     const modalImage = document.getElementById('modalImage');
     const closeModal = document.getElementById('closeModal');
-    const welcomeCard = document.getElementById('welcomeCard');
-    const chatCard = document.getElementById('chatCard');
-    const ringingCard = document.getElementById('ringingCard');
-    const callCard = document.getElementById('callCard');
     const callTimer = document.getElementById('callTimer');
     const callStatusText = document.getElementById('callStatusText');
     const remoteAudio = document.getElementById('remoteAudio');
@@ -1297,7 +1390,7 @@
         visitorNameInput.value = visitorName;
         callBtn.disabled = false;
         videoCallBtn.disabled = false;
-        emailBtn.disabled = false;
+        //emailBtn.disabled = false;
         messageBtn.disabled = false;
       }
       
@@ -1426,7 +1519,7 @@
         const hasName = visitorNameInput.value.trim().length > 0;
         callBtn.disabled = !hasName;
         videoCallBtn.disabled = !hasName;
-        emailBtn.disabled = !hasName;       
+        emailBtn.disabled = !hasName;
         messageBtn.disabled = !hasName;
         localStorage.setItem('visitorName', visitorNameInput.value);
       });
@@ -1434,12 +1527,15 @@
       callBtn.addEventListener('click', () => initiateCall(false));
       videoCallBtn.addEventListener('click', () => initiateCall(true));
       messageBtn.addEventListener('click', openChat);
-      emailBtn.addEventListener('click', openEmail);      
+      emailBtn.addEventListener('click', openEmail);
       cancelBtn.addEventListener('click', cancelCall);
       muteBtn.addEventListener('click', toggleMute);
       cameraBtn.addEventListener('click', toggleCamera);
       endBtn.addEventListener('click', () => endCall(true));
-      backFromChat.addEventListener('click', () => showCard('welcome'));
+      // Close modal buttons
+      document.getElementById('closeChatModal').addEventListener('click', () => showCard('welcome'));
+      document.getElementById('closeRingingModal').addEventListener('click', cancelCall);
+      document.getElementById('closeCallModal').addEventListener('click', () => endCall(true));      
       sendBtn.addEventListener('click', sendMessage);
       
       chatInput.addEventListener('keypress', (e) => {
@@ -1537,7 +1633,7 @@
       
       sendBtn.disabled = false;
     }
-
+    
 function openEmail() {
       // Show the modal
       document.getElementById('emailModal').classList.add('active');
@@ -1588,9 +1684,9 @@ function openEmail() {
         minute: '2-digit'
       });
       
-      const email = 'YOUR_EMAIL_HERE@gmail.com';
+      const email = 'agreatopportunity@gmail.com';
       const subject = encodeURIComponent(`${contactReason} - ${visitorName}`);
-      const body = encodeURIComponent(`Hi YOUR NAME,
+      const body = encodeURIComponent(`Hi Burton,
 
 ━━━━━━━━━━━━━━━━━━━━━━━━
 📋 CONTACT FORM
@@ -1623,7 +1719,6 @@ Sent via HomeBase Contact`);
       // Close modal after opening email
       document.getElementById('emailModal').classList.remove('active');
     });
-    
     function addMessageToUI(content, senderType, timestamp, attachment = null, messageId = null, isRead = false) {
       const div = document.createElement('div');
       div.className = `message ${senderType}`;
@@ -2036,10 +2131,20 @@ Sent via HomeBase Contact`);
     }
     
     function showCard(type) {
-      welcomeCard.classList.toggle('hidden', type !== 'welcome');
-      chatCard.classList.toggle('hidden', type !== 'chat');
-      ringingCard.classList.toggle('hidden', type !== 'ringing');
-      callCard.classList.toggle('hidden', type !== 'call');
+      // Close all modals
+      document.getElementById('chatModal').classList.remove('active');
+      document.getElementById('ringingModal').classList.remove('active');
+      document.getElementById('callModal').classList.remove('active');
+      
+      // Open the requested modal
+      if (type === 'chat') {
+        document.getElementById('chatModal').classList.add('active');
+      } else if (type === 'ringing') {
+        document.getElementById('ringingModal').classList.add('active');
+      } else if (type === 'call') {
+        document.getElementById('callModal').classList.add('active');
+      }
+      // 'welcome' just closes all modals (already done above)
     }
     
     function startCallTimer() {
@@ -2083,7 +2188,7 @@ Sent via HomeBase Contact`);
       navigator.serviceWorker.register('/sw.js').catch(console.error);
     }
 
-// ==========================================================================
+    // ==========================================================================
     // MATRIX RAIN ANIMATION
     // ==========================================================================
     
@@ -2182,7 +2287,7 @@ Sent via HomeBase Contact`);
     
     // Start the animation
     drawMatrix();
-    
+
     
     init();
   </script>
