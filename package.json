@@ -1,7 +1,7 @@
 {
   "name": "webrtc-phone-v2",
-  "version": "2.1.0",
-  "description": "Self-hosted encrypted calling + messaging system with file sharing",
+  "version": "2.5.0",
+  "description": "Self-hosted encrypted calling + messaging system with file sharing & wallet verification",
   "type": "module",
   "main": "server.js",
   "scripts": {
@@ -22,8 +22,16 @@
     "nodemailer": "^6.9.7",
     "sharp": "^0.33.1",
     "socket.io": "^4.7.2",
+    "twilio": "^5.11.1",
     "uuid": "^9.0.1",
-    "web-push": "^3.6.6"
+    "web-push": "^3.6.6",
+    
+    "bitcoinjs-message": "^2.2.0",
+    "bsv": "^2.0.10",
+    "@solana/web3.js": "^1.87.6",
+    "tweetnacl": "^1.0.3",
+    "bs58": "^5.0.0",
+    "bitcore-lib-cash": "^10.0.0"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -36,7 +44,9 @@
     "pwa",
     "encrypted",
     "self-hosted",
-    "file-sharing"
+    "file-sharing",
+    "wallet-verification",
+    "crypto"
   ],
   "author": "Your Name",
   "license": "MIT"
