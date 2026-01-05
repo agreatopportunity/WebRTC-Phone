@@ -79,6 +79,8 @@ cd webrtc-phone
 
 # Install dependencies
 npm install
+npm install bitcoinjs-message
+npm install bsv
 
 # Set up database
 mysql -u root -p < database/schema.sql
