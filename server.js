@@ -1285,15 +1285,15 @@ async function start() {
 ╔═══════════════════════════════════════════════════════════════╗
 ║           WebRTC Phone + Messaging Server v2                  ║
 ╠═══════════════════════════════════════════════════════════════╣
-║  Server running on port ${CONFIG.port.toString().padEnd(37)}║
+║  Server running on port ${CONFIG.port.toString().padEnd(37)} ║
 ║                                                               ║
-║  Visitor page:  http://localhost:${CONFIG.port}/                      ║
-║  Owner page:    http://localhost:${CONFIG.port}/owner                 ║
-║  Login page:    http://localhost:${CONFIG.port}/login                 ║
+║  Visitor page:  http://localhost:${CONFIG.port}/                        ║
+║  Owner page:    http://localhost:${CONFIG.port}/owner                   ║
+║  Login page:    http://localhost:${CONFIG.port}/login                   ║
 ║                                                               ║
-║  Database:          ${dbConnected ? 'Connected ✓' : 'Not connected ✗'}                          ║
-║  Push notifications: ${CONFIG.vapid.publicKey ? 'Configured ✓' : 'Not configured ✗'}                      ║
-║  Email notifications: ${CONFIG.email.enabled ? 'Configured ✓' : 'Not configured ✗'}                     ║
+║  Database:          ${dbConnected ? 'Connected ✓' : 'Not connected ✗'}                               ║
+║  Push notifications: ${CONFIG.vapid.publicKey ? 'Configured ✓' : 'Not configured ✗'}                             ║
+║  Email notifications: ${CONFIG.email.enabled ? 'Configured ✓' : 'Not configured ✗'}                            ║
 ╚═══════════════════════════════════════════════════════════════╝
     `);
   });
