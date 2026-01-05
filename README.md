@@ -315,6 +315,190 @@ webrtc-phone/
 - Verified users display a badge with chain icon
 - Short address shown (e.g., `1ABC...XYZ`)
 - Owner can see verification status in dashboard
+
+
+## API Endpoints
+
+### Generate Wallet
+```
+POST /api/wallet/generate
+Body: { "chain": "btc" | "bsv" | "bch" }
+
+Response:
+{
+  "success": true,
+  "chain": "btc",
+  "address": "1ABC...",
+  "privateKey": "5J...", // WIF format - SAVE THIS!
+  "publicKey": "02...",
+  "warning": "SAVE YOUR PRIVATE KEY NOW!"
+}
+```
+
+### Verify Signature
+```
+POST /api/wallet/verify
+Body: {
+  "chain": "btc",
+  "address": "1ABC...",
+  "message": "Verify identity for HomeBase...",
+  "signature": "...",
+  "visitorId": "uuid..." // optional
+}
+
+Response:
+{
+  "verified": true,
+  "chain": "btc",
+  "address": "1ABC...",
+  "shortAddress": "1ABC...XYZ"
+}
+```
+
+### Get Verification Message
+```
+GET /api/wallet/message
+
+Response:
+{
+  "message": "Verify identity for HomeBase\nTimestamp: ...\nNonce: ...",
+  "timestamp": "2026-01-04T...",
+  "nonce": "abc123..."
+}
+```
+
+### Check Wallet Status
+```
+GET /api/wallet/status/:visitorId
+
+Response:
+{
+  "verified": true,
+  "address": "1ABC...",
+  "chain": "btc",
+  "verifiedAt": "2026-01-04T..."
+}
+```
+
+## User Flow
+
+### Connect Existing Wallet
+
+```
+┌──────────────────────────────────────────────────┐
+│  [🔓 Identity Unverified]  [Verify Wallet]       │
+└──────────────────────────────────────────────────┘
+                    │
+                    ▼ Click "Verify Wallet"
+┌──────────────────────────────────────────────────┐
+│         🔐 Verify Your Identity                  │
+│                                                  │
+│  [Connect Wallet]  [Generate New]                │
+│                                                  │
+│  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐       │
+│  │ ₿   │ │ ⚡  │ │ Ƀ   │ │ Ƀ   │ │ ◎   │       │
+│  │ BTC │ │ LN  │ │ BSV │ │ BCH │ │ SOL │       │
+│  └─────┘ └─────┘ └─────┘ └─────┘ └─────┘       │
+└──────────────────────────────────────────────────┘
+                    │
+                    ▼ Select chain
+┌──────────────────────────────────────────────────┐
+│         Sign Message                             │
+│                                                  │
+│  Copy this message, sign in your wallet:         │
+│  ┌────────────────────────────────────────┐     │
+│  │ Verify identity for HomeBase           │     │
+│  │ Timestamp: 2026-01-04T12:00:00Z        │     │
+│  │ Nonce: abc123                          │     │
+│  └────────────────────────────────────────┘     │
+│                                                  │
+│  Your Address: [________________]                │
+│  Signature:    [________________]                │
+│                                                  │
+│  [Back]                      [Verify]            │
+└──────────────────────────────────────────────────┘
+                    │
+                    ▼ Success
+┌──────────────────────────────────────────────────┐
+│  [✅ Verified]  [1ABC...XYZ]  [BTC]         [×]  │
+└──────────────────────────────────────────────────┘
+```
+
+### Generate New Wallet
+
+```
+┌──────────────────────────────────────────────────┐
+│         🔐 Verify Your Identity                  │
+│                                                  │
+│  [Connect Wallet]  [Generate New] ← active       │
+│                                                  │
+│  ┌────────────────────────────────────────┐     │
+│  │ ₿  Generate BTC Wallet                 │     │
+│  └────────────────────────────────────────┘     │
+│  ┌────────────────────────────────────────┐     │
+│  │ Ƀ  Generate BSV Wallet                 │     │
+│  └────────────────────────────────────────┘     │
+│  ┌────────────────────────────────────────┐     │
+│  │ Ƀ  Generate BCH Wallet                 │     │
+│  └────────────────────────────────────────┘     │
+└──────────────────────────────────────────────────┘
+                    │
+                    ▼ Click generate
+┌──────────────────────────────────────────────────┐
+│         🎉 Wallet Generated!                     │
+│         ⚠️ SAVE YOUR PRIVATE KEY NOW!           │
+│                                                  │
+│  Chain:       BTC                                │
+│  Address:     1ABC...XYZ              [📋]       │
+│  Private Key: 5J... (blurred)    [📋] [👁️]      │
+│  Public Key:  02...                              │
+│                                                  │
+│  🔐 This private key will NEVER be shown again! │
+│                                                  │
+│  [Download Backup]    [I've Saved My Key]        │
+└──────────────────────────────────────────────────┘
+```
+
+## Security Notes
+
+### Private Keys
+- ⚠️ Private keys are generated server-side but NEVER stored
+- They are returned to the client ONCE and must be saved by the user
+- For maximum security, consider client-side generation (see Advanced section)
+
+### Signature Verification
+- Currently uses simplified verification for demo
+- For production, implement proper cryptographic verification using:
+  - `bitcoinjs-message` for BTC
+  - `bsv` library for BSV
+  - `@solana/web3.js` + `tweetnacl` for SOL
+
+### Storage
+- Verification status is stored in localStorage on client
+- Wallet address/chain is stored in database (no private keys)
+- Users can disconnect/reconnect anytime
+
+## Advanced: Client-Side Key Generation
+
+For maximum security, generate keys client-side using Web Crypto API or dedicated libraries:
+
+```javascript
+// Example with bitcoinjs-lib (would need to bundle)
+import * as bitcoin from 'bitcoinjs-lib';
+
+function generateBTCWalletClientSide() {
+  const keyPair = bitcoin.ECPair.makeRandom();
+  const { address } = bitcoin.payments.p2pkh({ 
+    pubkey: keyPair.publicKey 
+  });
+  
+  return {
+    address,
+    privateKey: keyPair.toWIF(),
+    publicKey: keyPair.publicKey.toString('hex')
+  };
+}
+```
   
 ## 🔐 Security
 
