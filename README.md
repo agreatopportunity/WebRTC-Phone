@@ -288,7 +288,34 @@ webrtc-phone/
     ├── manifest.json      # PWA manifest
     └── icon-*.png         # App icons
 ```
+## Supported Chains
 
+| Chain | Connect Method | Generate On-Site |
+|-------|---------------|------------------|
+| **₿ Bitcoin (BTC)** | Manual signature | ✅ Yes |
+| **Ƀ BSV** | Manual signature | ✅ Yes |
+| **Ƀ BCH** | Manual signature | ✅ Yes |
+| **◎ Solana (SOL)** | Phantom wallet | ❌ No (use Phantom) |
+| **⚡ Lightning** | Alby (WebLN) | ❌ No (use Alby) |
+
+## Features
+
+### 1. Connect Existing Wallet
+- Sign a message with your wallet to verify ownership
+- Works with any wallet that supports message signing
+- For SOL/Lightning: browser extensions auto-connect
+
+### 2. Generate New Wallet (On-Site)
+- Create a fresh BTC, BSV, or BCH wallet instantly
+- Private key is generated securely and shown ONCE
+- User must save the key themselves (we never store it)
+- Includes download backup feature
+
+### 3. Verification Badge
+- Verified users display a badge with chain icon
+- Short address shown (e.g., `1ABC...XYZ`)
+- Owner can see verification status in dashboard
+  
 ## 🔐 Security
 
 | Feature | Implementation |
