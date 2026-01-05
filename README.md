@@ -499,6 +499,31 @@ function generateBTCWalletClientSide() {
   };
 }
 ```
+## Future Enhancements
+
+- [ ] Add QR codes for generated wallets
+- [ ] Implement proper signature verification per chain
+- [ ] Add support for hardware wallets (Ledger, Trezor)
+- [ ] Add wallet balance display
+- [ ] Enable tipping/payments via wallet
+- [ ] Add ENS/BSV handle resolution
+
+## Troubleshooting
+
+### "Wallet not found" for Phantom/Alby
+- Make sure the extension is installed
+- Allow the extension to connect to your site
+- Try refreshing the page
+
+### Signature verification fails
+- Make sure you're signing the exact message shown
+- Some wallets add prefixes - try the "manual" option
+
+### Generated wallet doesn't work
+- Make sure you saved the private key correctly
+- The WIF format starts with '5' for mainnet BTC
+- Try importing into a wallet like Electrum to verify
+
   
 ## 🔐 Security
 
