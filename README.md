@@ -81,6 +81,7 @@ cd webrtc-phone
 npm install
 npm install bitcoinjs-message
 npm install bsv
+npm install bitcoinjs-message@2.2.0 bsv@2.0.0 @solana/web3.js@1.87.6 tweetnacl@1.0.3 bs58@5.0.0 bitcore-lib-cash@10.0.0
 
 # Set up database
 mysql -u root -p < database/schema.sql
