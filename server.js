@@ -1,5 +1,5 @@
 /**
- * WebRTC Phone + Messaging Server v2
+ * WebRTC Phone + Messaging Server
  * 
  * Features:
  * - WebRTC calling with signaling
