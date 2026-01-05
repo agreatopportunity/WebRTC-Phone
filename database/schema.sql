@@ -103,3 +103,27 @@ ON DUPLICATE KEY UPDATE username=username;
 -- Indexes for performance
 CREATE INDEX idx_messages_unread ON messages(conversation_id, is_read) WHERE is_read = FALSE;
 CREATE INDEX idx_conversations_updated ON conversations(updated_at DESC);
+
+-- Add wallet columns to visitors table for crypto
+ALTER TABLE visitors 
+ADD COLUMN wallet_address VARCHAR(255) NULL AFTER email,
+ADD COLUMN wallet_chain VARCHAR(20) NULL AFTER wallet_address,
+ADD COLUMN wallet_verified_at TIMESTAMP NULL AFTER wallet_chain;
+
+-- Create index for wallet lookups
+CREATE INDEX idx_wallet_address ON visitors(wallet_address);
+
+-- Create a separate wallets table for multiple wallets per visitor
+
+CREATE TABLE IF NOT EXISTS visitor_wallets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    visitor_id INT NOT NULL,
+    wallet_address VARCHAR(255) NOT NULL,
+    wallet_chain VARCHAR(20) NOT NULL,
+    verified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_primary BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (visitor_id) REFERENCES visitors(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_wallet (wallet_address, wallet_chain),
+    INDEX idx_visitor (visitor_id)
+);
+
